@@ -30,15 +30,14 @@ page = st.navigation(
             st.Page("app_pages/getting_started.py", title="Getting Started", icon=":material/rocket_launch:"),
             st.Page("app_pages/agenda.py", title="Agenda", icon=":material/calendar_today:"),
         ],
-        "Block 1: Data & Intelligence": [
-            st.Page("app_pages/session_01.py", title=_title(1, "Data Prep"), icon=":material/database:"),
-            st.Page("app_pages/session_02.py", title=_title(2, "Cortex Analyst & Semantic Views"), icon=":material/chat:"),
-            st.Page("app_pages/session_03.py", title=_title(3, "Cortex Search"), icon=":material/search:"),
+        "Block 1: Ingestion": [
+            st.Page("app_pages/session_01.py", title=_title(1, "Environment Setup"), icon=":material/settings:"),
+            st.Page("app_pages/session_02.py", title=_title(2, "Enterprise Ingestion"), icon=":material/cloud_download:"),
         ],
-        "Block 2: Agents & Apps": [
-            st.Page("app_pages/session_04.py", title=_title(4, "Cortex Agents"), icon=":material/smart_toy:"),
-            st.Page("app_pages/session_05.py", title=_title(5, "CoWork"), icon=":material/group:"),
-            st.Page("app_pages/session_06.py", title=_title(6, "Streamlit"), icon=":material/web:"),
+        "Block 2: EDW & Optimization": [
+            st.Page("app_pages/session_03.py", title=_title(3, "EDW Pipeline (dbt)"), icon=":material/build_circle:"),
+            st.Page("app_pages/session_04.py", title=_title(4, "Code Review"), icon=":material/rate_review:"),
+            st.Page("app_pages/session_05.py", title=_title(5, "DE Skill (Stretch)"), icon=":material/psychology:"),
         ],
     },
     position="sidebar",

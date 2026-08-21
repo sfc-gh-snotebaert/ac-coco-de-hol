@@ -5,13 +5,12 @@ st.title("Workshop agenda")
 AGENDA = [
     ("{{TIME_ARRIVAL}}", "Arrival & Coffee", None, None),
     ("{{TIME_WELCOME}}", "Welcome & Workshop Overview", None, None),
-    ("{{TIME_SESSION_1}}", "Session 1: Data Prep", "{{DUR_SESSION_1}}", "1"),
-    ("{{TIME_SESSION_2}}", "Session 2: Cortex Analyst & Semantic Views", "{{DUR_SESSION_2}}", "2"),
-    ("{{TIME_SESSION_3}}", "Session 3: Cortex Search", "{{DUR_SESSION_3}}", "3"),
+    ("{{TIME_SESSION_1}}", "Session 1: Environment Setup", "{{DUR_SESSION_1}}", "1"),
+    ("{{TIME_SESSION_2}}", "Session 2: Enterprise Ingestion with Openflow", "{{DUR_SESSION_2}}", "2"),
     ("{{TIME_BREAK}}", ":orange-badge[BREAK]", None, None),
-    ("{{TIME_SESSION_4}}", "Session 4: Cortex Agents", "{{DUR_SESSION_4}}", "4"),
-    ("{{TIME_SESSION_5}}", "Session 5: CoWork", "{{DUR_SESSION_5}}", "5"),
-    ("{{TIME_SESSION_6}}", "Session 6: Streamlit", "{{DUR_SESSION_6}}", "6"),
+    ("{{TIME_SESSION_3}}", "Session 3: EDW Pipeline from STTM with dbt", "{{DUR_SESSION_3}}", "3"),
+    ("{{TIME_SESSION_4}}", "Session 4: Code Review & Optimization", "{{DUR_SESSION_4}}", "4"),
+    ("{{TIME_SESSION_5}}", "Session 5: Data Engineer Skill (Stretch)", "{{DUR_SESSION_5}}", "5"),
 ]
 
 for time, title, duration, session_num in AGENDA:
@@ -34,11 +33,12 @@ st.markdown("##### What you'll build by end of session")
 st.markdown("""
 | Object Type | Count | Examples |
 |-------------|-------|---------|
-| **Tables** | {{NUM_TABLES}} | {{TABLE_EXAMPLES}} |
-| **Cortex Search Services** | 1 | {{SEARCH_SERVICE_NAME}} |
-| **Semantic Views** | 1 | {{SEMANTIC_VIEW_NAME}} with relationships, metrics, and AI instructions |
-| **Cortex Agents** | 1 | {{AGENT_NAME}} with Analyst + Search + custom tools |
-| **Streamlit Apps** | 1 | Operations dashboard with AI chat |
+| **Databases** | 2 | `RAW_AC` (ingestion layer), `EDW_AC` (warehouse layer) |
+| **Iceberg Tables** | {{NUM_SOURCE_TABLES}} | Bookings, Passengers, Flights, Airports, Work Orders, Aeroplan Txns |
+| **Batch Control** | 1 | `RAW_AC.INGESTION.BATCH_CONTROL` with audit trail |
+| **dbt Models** | ~{{NUM_DBT_MODELS}} | Staging (1:1 from raw) + Marts (DIM/FACT) |
+| **dbt Tests** | ~{{NUM_DBT_TESTS}} | not_null, unique, relationships, custom DQ |
+| **Recommendations Report** | 1 | Clustering keys, anti-pattern fixes, performance improvements |
 """)
 
 st.space("small")

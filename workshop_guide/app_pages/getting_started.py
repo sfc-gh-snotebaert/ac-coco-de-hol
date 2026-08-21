@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.title("Getting Started")
-st.markdown("Provision a Snowflake account for the workshop")
+st.markdown("Set up your Snowflake environment for the workshop")
 
 st.space("small")
 
@@ -19,7 +19,7 @@ On the **Choose your Snowflake edition** screen, select:
 | **Edition** | Enterprise |
 | **Region** | {{RECOMMENDED_REGION}} |
 
-Enterprise edition is recommended because it includes all the AI/ML features we use in this workshop.
+Enterprise edition is recommended because it includes all the features we use in this workshop.
 """)
 
 st.space("small")
@@ -46,15 +46,21 @@ Confirm you are using the **ACCOUNTADMIN** role — you can check and switch rol
 
 st.space("small")
 
-st.markdown("#### Step 4: Enable cross-region inference")
+st.markdown("#### Step 4: Verify Openflow is enabled")
 
 with st.container(border=True):
     st.markdown("""
-Several sessions use Cortex LLM models that require cross-region inference. Enable it by running this SQL in a worksheet:
+This workshop uses **Openflow** for data ingestion from external databases. Your account has been pre-provisioned with Openflow enabled.
+
+Verify it is available by running this SQL in a worksheet:
 
 ```sql
-ALTER ACCOUNT SET CORTEX_ENABLED_CROSS_REGION = 'ANY_REGION';
+SHOW OPENFLOW RUNTIMES;
 ```
+
+If you see an empty result set (no error), Openflow is enabled. If you get an error, notify the workshop facilitator.
+
+:material/info: Openflow requires SPCS (Snowpark Container Services) which is pre-enabled on your trial account for this workshop.
 """)
 
 st.space("small")
