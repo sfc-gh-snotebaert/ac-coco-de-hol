@@ -9,7 +9,7 @@ st.markdown("#### Step 1: Sign up for a free trial")
 
 with st.container(border=True):
     st.markdown("""
-Go to **[signup.snowflake.com]({{SIGNUP_LINK}})** and fill out the registration form with your name, email, and company.
+Go to **[signup.snowflake.com](https://signup.snowflake.com)** and fill out the registration form with your name, email, and company.
 
 On the **Choose your Snowflake edition** screen, select:
 
@@ -17,7 +17,7 @@ On the **Choose your Snowflake edition** screen, select:
 |---------|-------------------|
 | **Cloud provider** | Amazon Web Services (AWS) |
 | **Edition** | Enterprise |
-| **Region** | {{RECOMMENDED_REGION}} |
+| **Region** | AWS Canada (Central) or US East (N. Virginia) |
 
 Enterprise edition is recommended because it includes all the features we use in this workshop.
 """)

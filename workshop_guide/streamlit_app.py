@@ -13,8 +13,8 @@ def _title(session_num: int, label: str) -> str:
 
 
 st.set_page_config(
-    page_title="{{WORKSHOP_TITLE}}",
-    page_icon="{{PAGE_ICON}}",
+    page_title="Air Canada Data Engineering Workshop",
+    page_icon=":material/engineering:",
     layout="wide",
 )
 

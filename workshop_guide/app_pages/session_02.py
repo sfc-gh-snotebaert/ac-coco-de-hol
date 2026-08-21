@@ -1,7 +1,7 @@
 import streamlit as st
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(2, "Enterprise Ingestion with Openflow", "{{TIME_SESSION_2}}", "{{DUR_SESSION_2}}", "Openflow connector replicating Postgres → Iceberg tables with enterprise naming and audit columns")
+render_session_header(2, "Enterprise Ingestion with Openflow", "9:25 AM", "40 min", "Openflow connector replicating Postgres → Iceberg tables with enterprise naming and audit columns")
 
 render_technologies_used([
     {"name": "Openflow Connectors", "description": "Managed CDC connectors that replicate data from external databases (Postgres, MySQL, SQL Server) into Snowflake with minimal configuration.", "icon": "cable"},
@@ -13,12 +13,12 @@ render_technologies_used([
 PROMPT_2_1 = """In RAW_AC.INGESTION, I need to connect to an external Postgres database and replicate its tables into Snowflake.
 
 Source database connection details:
-- Host: {{SOURCE_HOST}}
-- Port: {{SOURCE_PORT}}
-- Database: {{SOURCE_DB}}
-- Schemas to replicate: {{SOURCE_SCHEMA_LIST}}
-- Username: {{SOURCE_USER}}
-- Password: {{SOURCE_PASSWORD}}
+- Host: ac-source-db.ca-central-1.rds.amazonaws.com
+- Port: 5432
+- Database: aircanada_ops
+- Schemas to replicate: reservations, flight_ops, maintenance, loyalty
+- Username: ac_readonly
+- Password: (provided during workshop)
 
 Using Openflow:
 1. Create a secret to store the source database credentials
@@ -37,17 +37,17 @@ Creates the connection from Snowflake to the source Postgres database:
 -- Store credentials securely
 CREATE SECRET RAW_AC.INGESTION.POSTGRES_CREDENTIALS
   TYPE = PASSWORD
-  USERNAME = '{{SOURCE_USER}}'
-  PASSWORD = '{{SOURCE_PASSWORD}}';
+  USERNAME = 'ac_readonly'
+  PASSWORD = '(provided during workshop)';
 
 -- Create the Openflow connector
 CREATE OPENFLOW CONNECTOR AC_POSTGRES_CONNECTOR
-  RUNTIME = {{OPENFLOW_RUNTIME}}
+  RUNTIME = AC_OPENFLOW_RT
   SOURCE = POSTGRES
   CONNECTION = (
-    HOST = '{{SOURCE_HOST}}',
-    PORT = {{SOURCE_PORT}},
-    DATABASE = '{{SOURCE_DB}}'
+    HOST = 'ac-source-db.ca-central-1.rds.amazonaws.com',
+    PORT = 5432,
+    DATABASE = 'aircanada_ops'
   )
   CREDENTIALS = RAW_AC.INGESTION.POSTGRES_CREDENTIALS
   TARGET_DATABASE = 'RAW_AC'
@@ -101,7 +101,7 @@ CREATE ICEBERG TABLE RAW_AC.INGESTION.BOOKINGS (
   CATALOG = 'SNOWFLAKE'
   EXTERNAL_VOLUME = '...'
   BASE_LOCATION = 'raw_ac/ingestion/bookings/'
-  COMMENT = 'Source: {{SOURCE_DB}}.reservations.bookings';
+  COMMENT = 'Source: aircanada_ops.reservations.bookings';
 ```
 
 **Why Iceberg?**
@@ -176,7 +176,7 @@ render_key_concepts([
 
 render_what_you_built([
     "Openflow connector to Postgres source (AC_POSTGRES_CONNECTOR)",
-    "{{NUM_SOURCE_TABLES}} Iceberg tables with enterprise naming (UPPERCASE)",
+    "6 Iceberg tables with enterprise naming (UPPERCASE)",
     "Audit columns on every table (_LOADED_AT, _BATCH_ID, _SOURCE_SYSTEM)",
     "Batch control records with row counts and status",
     "End-to-end audit trail from source to landing zone",

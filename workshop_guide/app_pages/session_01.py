@@ -1,7 +1,7 @@
 import streamlit as st
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(1, "Environment Setup", "{{TIME_SESSION_1}}", "{{DUR_SESSION_1}}", "Multi-layer database architecture, warehouse, and Openflow runtime verification")
+render_session_header(1, "Environment Setup", "9:10 AM", "15 min", "Multi-layer database architecture, warehouse, and Openflow runtime verification")
 
 render_technologies_used([
     {"name": "Multi-Layer Architecture", "description": "Separate databases for raw ingestion (RAW_AC) and curated warehouse (EDW_AC) enforce clear data ownership and access boundaries.", "icon": "layers"},
@@ -16,7 +16,7 @@ PROMPT_1_1 = """Create the following Snowflake objects for our Air Canada data e
 2. A schema called INGESTION inside RAW_AC
 3. A database called EDW_AC (this is the curated warehouse layer)
 4. Schemas called STAGING and MARTS inside EDW_AC
-5. A warehouse called {{WAREHOUSE_NAME}} (size MEDIUM, auto-suspend after 60 seconds, auto-resume enabled)
+5. A warehouse called AC_DE_WH (size MEDIUM, auto-suspend after 60 seconds, auto-resume enabled)
 6. Set the session context to use RAW_AC.INGESTION and the new warehouse
 
 Execute all SQL and confirm each object was created."""
@@ -37,14 +37,14 @@ CREATE SCHEMA EDW_AC.STAGING;
 CREATE SCHEMA EDW_AC.MARTS;
 
 -- Compute
-CREATE WAREHOUSE {{WAREHOUSE_NAME}}
+CREATE WAREHOUSE AC_DE_WH
   WAREHOUSE_SIZE = 'MEDIUM'
   AUTO_SUSPEND = 60
   AUTO_RESUME = TRUE;
 
 USE DATABASE RAW_AC;
 USE SCHEMA INGESTION;
-USE WAREHOUSE {{WAREHOUSE_NAME}};
+USE WAREHOUSE AC_DE_WH;
 ```
 
 **Why two databases?** Separating raw and curated data enforces clear boundaries: raw tables are append-only landing zones owned by the ingestion process, while EDW tables are governed, tested, and optimized for consumers.
@@ -55,7 +55,7 @@ PROMPT_1_2 = """Verify that Openflow is available and ready on this account:
 
 1. Show any existing Openflow runtimes
 2. Show available Openflow connector types
-3. If no runtime exists, create one called {{OPENFLOW_RUNTIME}} using warehouse {{WAREHOUSE_NAME}}
+3. If no runtime exists, create one called AC_OPENFLOW_RT using warehouse AC_DE_WH
 
 Report what you find."""
 
@@ -69,8 +69,8 @@ SHOW OPENFLOW RUNTIMES;
 SHOW OPENFLOW CONNECTOR TYPES;
 
 -- If no runtime exists:
-CREATE OPENFLOW RUNTIME {{OPENFLOW_RUNTIME}}
-  WAREHOUSE = {{WAREHOUSE_NAME}};
+CREATE OPENFLOW RUNTIME AC_OPENFLOW_RT
+  WAREHOUSE = AC_DE_WH;
 ```
 
 The **Openflow Runtime** is the compute engine that runs connectors. It manages the lifecycle of data replication jobs.
@@ -130,7 +130,7 @@ render_key_concepts([
 render_what_you_built([
     "RAW_AC database with INGESTION schema (raw landing zone)",
     "EDW_AC database with STAGING and MARTS schemas (curated layer)",
-    "{{WAREHOUSE_NAME}} warehouse (Medium, auto-suspend 60s)",
+    "AC_DE_WH warehouse (Medium, auto-suspend 60s)",
     "Openflow runtime verified and ready",
     "BATCH_CONTROL table and BATCH_SUMMARY view for audit",
 ])

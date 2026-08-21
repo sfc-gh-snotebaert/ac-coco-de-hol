@@ -1,14 +1,14 @@
 import streamlit as st
 
-st.title("{{WORKSHOP_TITLE}}")
-st.markdown("{{WORKSHOP_SUBTITLE}}")
+st.title("Air Canada Data Engineering Workshop")
+st.markdown("Building Enterprise Pipelines with Cortex Code")
 
 st.space("small")
 
 col1, col2, col3 = st.columns(3)
 col1.metric("Sections", "5", help="Hands-on lab sections")
 col2.metric("Prompts", "14", help="Total prompts across all sessions")
-col3.metric("Duration", "{{DURATION}}", help="Total workshop time")
+col3.metric("Duration", "2.5 hrs", help="Total workshop time")
 
 st.space("medium")
 
@@ -28,7 +28,7 @@ st.space("small")
 st.markdown("#### The scenario")
 with st.container(border=True):
     st.markdown("""
-{{SCENARIO_DESCRIPTION}}
+Air Canada's operational systems — reservations, flight ops, maintenance, and loyalty — run on a legacy Postgres database. Your mission: build an enterprise-grade data pipeline that ingests this data into Snowflake, transforms it into a dimensional warehouse, and optimizes it for production — all using Cortex Code as your AI pair-programmer.
 
 We'll build a complete data engineering platform covering:
 
@@ -46,7 +46,7 @@ st.markdown("#### What we're building")
 
 with st.container(border=True):
     st.markdown("""
-In {{DURATION}}, we build an enterprise data engineering pipeline end-to-end:
+In 2.5 hrs, we build an enterprise data engineering pipeline end-to-end:
 
 **1. Environment Setup** — Create the multi-layer database architecture (RAW, EDW), warehouses, and verify Openflow readiness.
 
@@ -70,4 +70,4 @@ with st.container(border=True):
 """)
 
 st.space("medium")
-st.caption("Built for the {{EVENT_DATE}} workshop  :material/location_on:  {{VENUE_NAME}}, {{VENUE_CITY}}")
+st.caption("Built for the September 15, 2026 workshop  :material/location_on:  Air Canada Centre, Montreal, QC")

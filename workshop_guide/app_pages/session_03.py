@@ -1,7 +1,7 @@
 import streamlit as st
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(3, "EDW Pipeline from STTM with dbt", "{{TIME_SESSION_3}}", "{{DUR_SESSION_3}}", "dbt project generated from an enterprise STTM with SCD Type 1/2, hash-based change detection, and data quality tests")
+render_session_header(3, "EDW Pipeline from STTM with dbt", "10:20 AM", "45 min", "dbt project generated from an enterprise STTM with SCD Type 1/2, hash-based change detection, and data quality tests")
 
 render_technologies_used([
     {"name": "dbt (Data Build Tool)", "description": "A SQL-first transformation framework. Models are SELECT statements; dbt handles DDL, dependencies, testing, and documentation.", "icon": "build_circle"},
@@ -12,7 +12,7 @@ render_technologies_used([
 st.markdown("""
 **Before running the prompts below**, review the STTM document:
 
-1. Download the STTM: [{{STTM_FILENAME}}]({{STTM_DOWNLOAD_URL}})
+1. Download the STTM: [sttm_dim_customer.csv](https://github.com/sfc-gh-snotebaert/ac-coco-de-hol/raw/main/sttm_dim_customer.csv)
 2. Review its structure — it has four sections: Cover Sheet, Version Control, Data Dictionary, and the STTM mapping itself
 3. Note the key columns: `TARGET_TYPE` (Type 1, Type 2, Technical Field), `TRANSFORMATION_LOGIC`, `PII_FLAG`, and `KEY_TYPE`
 4. You will paste the full STTM content into the first prompt below
@@ -24,10 +24,10 @@ st.space("small")
 PROMPT_3_1 = """I have an enterprise Source-to-Target Mapping (STTM) document that defines DIM_CUSTOMER for our EDW. Here it is:
 
 ```
-{{STTM_CONTENT}}
+<paste the full contents of sttm_dim_customer.csv here>
 ```
 
-Using this STTM, generate a dbt project called {{DBT_PROJECT_NAME}} that implements the DIM_CUSTOMER table with full SCD Type 2 logic:
+Using this STTM, generate a dbt project called ac_edw that implements the DIM_CUSTOMER table with full SCD Type 2 logic:
 
 1. Create a staging model `stg_customer_master` in EDW_AC.STAGING that:
    - SELECTs from the source table DIM_CUSTOMER_MASTER in RAW_AC.INGESTION
@@ -54,7 +54,7 @@ render_explanation("What this prompt does", """
 Generates a complete dbt project implementing the STTM specification:
 
 ```
-{{DBT_PROJECT_NAME}}/
+ac_edw/
 ├── dbt_project.yml
 ├── profiles.yml
 ├── models/
@@ -107,7 +107,7 @@ The STTM is the **contract** — Cortex Code translates it directly into executa
 """)
 
 
-PROMPT_3_2 = """For the {{DBT_PROJECT_NAME}} dbt project, generate a comprehensive test suite based on the STTM metadata:
+PROMPT_3_2 = """For the ac_edw dbt project, generate a comprehensive test suite based on the STTM metadata:
 
 1. Schema tests (in schema.yml files) derived from the STTM:
    - DIM_CUSTOMER_KEY: not_null + unique (it's the PK per KEY_TYPE)
@@ -197,8 +197,8 @@ render_explanation("What this prompt does", """
 Runs the full dbt pipeline and produces a quality report:
 
 ```
-dbt run --project-dir {{DBT_PROJECT_NAME}}
-dbt test --project-dir {{DBT_PROJECT_NAME}}
+dbt run --project-dir ac_edw
+dbt test --project-dir ac_edw
 ```
 
 **Expected output:**
@@ -233,7 +233,7 @@ render_key_concepts([
 ])
 
 render_what_you_built([
-    "dbt project ({{DBT_PROJECT_NAME}}) implementing DIM_CUSTOMER from STTM",
+    "dbt project (ac_edw) implementing DIM_CUSTOMER from STTM",
     "Staging model with hash-based change detection",
     "Mart model with full SCD Type 2 logic (versioning, expiry, soft deletes)",
     "~12 data quality tests derived from STTM metadata (schema + custom SCD integrity)",

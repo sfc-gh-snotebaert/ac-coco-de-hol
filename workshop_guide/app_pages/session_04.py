@@ -1,7 +1,7 @@
 import streamlit as st
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(4, "Code Review & Optimization", "{{TIME_SESSION_4}}", "{{DUR_SESSION_4}}", "SQL anti-pattern detection, query profile analysis, and clustering recommendations")
+render_session_header(4, "Code Review & Optimization", "11:05 AM", "35 min", "SQL anti-pattern detection, query profile analysis, and clustering recommendations")
 
 render_technologies_used([
     {"name": "SQL Anti-Pattern Detection", "description": "Systematic review of SQL for common pitfalls: non-sargable predicates, implicit casts, SELECT *, missing filters, and Snowflake-specific traps.", "icon": "bug_report"},
@@ -10,7 +10,7 @@ render_technologies_used([
 ])
 
 
-PROMPT_4_1 = """Review the dbt SQL models we generated in Session 3 for the {{DBT_PROJECT_NAME}} project.
+PROMPT_4_1 = """Review the dbt SQL models we generated in Session 3 for the ac_edw project.
 
 Perform a comprehensive code review covering:
 
@@ -49,7 +49,7 @@ render_explanation("What this prompt does", """
 Uses Cortex Code as a code review agent. It analyzes the generated SQL and produces findings like:
 
 ```
-CODE REVIEW REPORT — {{DBT_PROJECT_NAME}}
+CODE REVIEW REPORT — ac_edw
 ==========================================
 
 FINDING 1 [HIGH] — Anti-Pattern: Implicit Type Cast
@@ -129,7 +129,7 @@ ALTER TABLE EDW_AC.MARTS.DIM_PASSENGER
 """)
 
 
-PROMPT_4_3 = """Produce a consolidated Optimization Recommendations Report for the entire {{DBT_PROJECT_NAME}} project.
+PROMPT_4_3 = """Produce a consolidated Optimization Recommendations Report for the entire ac_edw project.
 
 The report should include:
 
@@ -158,7 +158,7 @@ Produces a complete, actionable optimization report:
 ```
 OPTIMIZATION RECOMMENDATIONS REPORT
 ====================================
-Project: {{DBT_PROJECT_NAME}}
+Project: ac_edw
 Date: [today]
 Reviewer: Cortex Code
 
