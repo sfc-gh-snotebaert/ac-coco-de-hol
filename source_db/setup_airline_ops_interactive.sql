@@ -1,20 +1,26 @@
 -- ============================================================================
--- Air Canada HOL — Source Database Setup
+-- Air Canada HOL — Source Database Setup (pgAdmin / DBeaver version)
 -- Target: Snowflake Postgres instance PG01, database: airline_ops
 -- Creates schemas, tables, and synthetic data for the workshop
 --
--- Usage:  psql "service=postgres1 connect_timeout=10" -f setup_airline_ops.sql
---   (run against the default 'postgres' database — the script creates and
---    connects to airline_ops automatically)
+-- Usage (no psql — for GUI clients like pgAdmin / DBeaver):
+--   1. Connect to the default 'postgres' database and run STEP 1 below.
+--   2. Open a new connection/tab to the 'airline_ops' database, then run
+--      everything from STEP 2 onward in that connection.
 -- ============================================================================
 
--- CREATE DATABASE cannot run inside a transaction, so we use psql's
--- \gexec trick: SELECT the DDL only if the database doesn't already exist.
-SELECT 'CREATE DATABASE airline_ops'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'airline_ops') \gexec
+-- ============================================================================
+-- STEP 1 — run against the 'postgres' database
+-- ============================================================================
 
--- Switch connection to the new database (psql meta-command)
-\connect airline_ops
+-- CREATE DATABASE cannot run inside a transaction and has no "IF NOT EXISTS"
+-- clause. Run this once; if the database already exists it will error with
+-- "database already exists" — safe to ignore and continue to Step 2.
+CREATE DATABASE airline_ops;
+
+-- ============================================================================
+-- STEP 2 — reconnect to the 'airline_ops' database, then run everything below
+-- ============================================================================
 
 -- ============================================================================
 -- SCHEMAS
