@@ -5,10 +5,10 @@ st.title("Workshop agenda")
 AGENDA = [
     ("8:30 AM", "Arrival & Coffee", None, None),
     ("9:00 AM", "Welcome & Workshop Overview", None, None),
-    ("9:10 AM", "Session 1: Environment Setup", "15 min", "1"),
-    ("9:25 AM", "Session 2: Enterprise Ingestion with Openflow", "40 min", "2"),
+    ("9:10 AM", "Session 1: Review Current Configuration", "15 min", "1"),
+    ("9:25 AM", "Session 2: Create Openflow Postgres Connector", "40 min", "2"),
     ("10:05 AM", ":orange-badge[BREAK]", None, None),
-    ("10:20 AM", "Session 3: EDW Pipeline from STTM with dbt", "45 min", "3"),
+    ("10:20 AM", "Session 3: Create dbt Project from STTM Files", "45 min", "3"),
     ("11:05 AM", "Session 4: Code Review & Optimization", "35 min", "4"),
     ("11:40 AM", "Session 5: Data Engineer Skill (Stretch)", "15 min", "5"),
 ]
@@ -33,11 +33,11 @@ st.markdown("##### What you'll build by end of session")
 st.markdown("""
 | Object Type | Count | Examples |
 |-------------|-------|---------|
-| **Databases** | 2 | `RAW_AC` (ingestion layer), `EDW_AC` (warehouse layer) |
-| **Iceberg Tables** | 6 | Bookings, Passengers, Flights, Airports, Work Orders, Aeroplan Txns |
-| **Batch Control** | 1 | `RAW_AC.INGESTION.BATCH_CONTROL` with audit trail |
-| **dbt Models** | ~2 | Staging (1:1 from raw) + Marts (DIM/FACT) |
-| **dbt Tests** | ~12 | not_null, unique, relationships, custom DQ |
+| **Databases** | 2 | `AIRLINE_OPS` (CDC landing zone), `EDW` (warehouse layer) |
+| **Openflow Connector** | 1 | `PG_CDC_CONNECTOR` — live Postgres CDC into AIRLINE_OPS |
+| **Iceberg Tables** | 4 | `EDW.GOLD.DIM_AIRPORT`, `DIM_FLIGHT`, `DIM_PASSENGER` (SCD2), `FACT_BOOKING` |
+| **dbt Models** | ~8 | 4 staging + 4 mart models (Iceberg in EDW.GOLD) |
+| **dbt Tests** | ~12 | not_null, unique, relationships, accepted_values, custom SCD integrity |
 | **Recommendations Report** | 1 | Clustering keys, anti-pattern fixes, performance improvements |
 """)
 

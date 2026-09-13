@@ -1,0 +1,46 @@
+================================================================================
+COVER SHEET
+================================================================================
+Title,Source to Target Mapping – FACT_BOOKING
+Project Name,EDW Phase 1
+Document Creator,AC235328-SF@AIRCANADA.CA
+Version,1.0
+Date,2026-09-16
+
+================================================================================
+VERSION CONTROL
+================================================================================
+Version,Revision Date,Revision Author,Project,Subject,Revision Notes,Approved By,Approved Date
+1.0,2026-09-16,AC235328-SF@AIRCANADA.CA,EDW Phase 1,Source to Target Mapping – FACT_BOOKING,Initial version,,
+
+================================================================================
+DATA DICTIONARY
+================================================================================
+Attribute Name,Table Name,Description
+FACT_BOOKING_KEY,FACT_BOOKING,Surrogate primary key for the booking fact
+PNR,FACT_BOOKING,Passenger Name Record (business identifier of the booking)
+BOOKING_DATE,FACT_BOOKING,Date the booking was created
+FLIGHT_KEY,FACT_BOOKING,Foreign key to DIM_FLIGHT
+PASSENGER_KEY,FACT_BOOKING,Foreign key to DIM_PASSENGER
+FARE_CLASS,FACT_BOOKING,Fare class code of the booking
+STATUS,FACT_BOOKING,Current booking status
+TOTAL_AMOUNT,FACT_BOOKING,Total booking amount in booking currency
+CREATEDBATCHLOGID,FACT_BOOKING,Batch log ID of the ETL run that inserted this record
+UPDATEDBATCHLOGID,FACT_BOOKING,Batch log ID of the most recent ETL run that updated this record
+UPDATETYPE,FACT_BOOKING,Last DML operation applied to this record: INSERT UPDATE or DELETE
+
+================================================================================
+STTM
+================================================================================
+TARGET_TYPE,TARGET_TABLE_NAME,PHYSICAL_ORDER,TARGET_COLUMN_NAME,TARGET_DATA_TYPE,TARGET_PRECISION,TARGET_COLUMN_DESCRIPTION,KEY_TYPE,TARGET_NULLABLE,DATA_SENSITIVITY,PII_FLAG,PII_TYPE,TYPE_OF_DE_IDENTIFICATION_MECHANISM,TRANSFORMATION_LOGIC,SOURCE_TABLE_NAME,SOURCE_COLUMN_NAME,NOTES
+Not Applicable,FACT_BOOKING,1,FACT_BOOKING_KEY,BIGINT,,Surrogate primary key for the booking fact,PK,No,Internal Data,No,,,AUTOINCREMENT,,,
+Type 1,FACT_BOOKING,2,PNR,VARCHAR(6),,Passenger Name Record (business identifier of the booking),AK,No,Internal Data,No,,,UPPER(TRIM(PNR)),RESERVATIONS.BOOKINGS,PNR,
+Type 1,FACT_BOOKING,3,BOOKING_DATE,DATE,,Date the booking was created,,No,Internal Data,No,,,Direct Mapping,RESERVATIONS.BOOKINGS,BOOKING_DATE,
+Not Applicable,FACT_BOOKING,4,FLIGHT_KEY,BIGINT,,Foreign key to DIM_FLIGHT,FK,No,Internal Data,No,,,Lookup DIM_FLIGHT.DIM_FLIGHT_KEY by FLIGHT_ID,RESERVATIONS.BOOKINGS,FLIGHT_ID,Resolved via FK lookup to DIM_FLIGHT at load time
+Not Applicable,FACT_BOOKING,5,PASSENGER_KEY,BIGINT,,Foreign key to DIM_PASSENGER,FK,No,Internal Data,No,,,Lookup DIM_PASSENGER.DIM_PASSENGER_KEY by PASSENGER_ID (CURRENTFLAG='1'),RESERVATIONS.BOOKINGS,PASSENGER_ID,Resolved via FK lookup to current DIM_PASSENGER record
+Type 1,FACT_BOOKING,6,FARE_CLASS,VARCHAR(1),,Fare class code of the booking,,No,Internal Data,No,,,UPPER(TRIM(FARE_CLASS)),RESERVATIONS.BOOKINGS,FARE_CLASS,
+Type 1,FACT_BOOKING,7,STATUS,VARCHAR(20),,Current booking status,,No,Internal Data,No,,,UPPER(TRIM(STATUS)),RESERVATIONS.BOOKINGS,STATUS,
+Type 1,FACT_BOOKING,8,TOTAL_AMOUNT,NUMBER(10,2),,Total booking amount in booking currency,,No,Internal Data,No,,,Direct Mapping,RESERVATIONS.BOOKINGS,TOTAL_AMOUNT,
+Technical Field,FACT_BOOKING,9,CREATEDBATCHLOGID,BIGINT,,Batch log ID of the ETL run that inserted this record,,No,Internal Data,No,,,ETL_BATCH_LOG_ID,,,
+Technical Field,FACT_BOOKING,10,UPDATEDBATCHLOGID,BIGINT,,Batch log ID of the most recent ETL run that updated this record,,Yes,Internal Data,No,,,ETL_BATCH_LOG_ID,,,
+Technical Field,FACT_BOOKING,11,UPDATETYPE,VARCHAR(10),,Last DML operation applied to this record: INSERT UPDATE or DELETE,,No,Internal Data,No,,,'INSERT',,Insert-oriented fact; updates only on booking status changes

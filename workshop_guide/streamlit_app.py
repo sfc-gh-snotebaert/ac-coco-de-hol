@@ -31,11 +31,11 @@ page = st.navigation(
             st.Page("app_pages/agenda.py", title="Agenda", icon=":material/calendar_today:"),
         ],
         "Block 1: Ingestion": [
-            st.Page("app_pages/session_01.py", title=_title(1, "Environment Setup"), icon=":material/settings:"),
-            st.Page("app_pages/session_02.py", title=_title(2, "Enterprise Ingestion"), icon=":material/cloud_download:"),
+            st.Page("app_pages/session_01.py", title=_title(1, "Review Configuration"), icon=":material/settings:"),
+            st.Page("app_pages/session_02.py", title=_title(2, "Openflow Connector"), icon=":material/cloud_download:"),
         ],
         "Block 2: EDW & Optimization": [
-            st.Page("app_pages/session_03.py", title=_title(3, "EDW Pipeline (dbt)"), icon=":material/build_circle:"),
+            st.Page("app_pages/session_03.py", title=_title(3, "dbt from STTMs"), icon=":material/build_circle:"),
             st.Page("app_pages/session_04.py", title=_title(4, "Code Review"), icon=":material/rate_review:"),
             st.Page("app_pages/session_05.py", title=_title(5, "DE Skill (Stretch)"), icon=":material/psychology:"),
         ],

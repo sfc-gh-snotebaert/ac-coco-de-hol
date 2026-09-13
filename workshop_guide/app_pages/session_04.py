@@ -75,7 +75,7 @@ This simulates a senior engineer reviewing code before merge — the kind of rev
 """)
 
 
-PROMPT_4_2 = """Now analyze the query performance of our dbt models. For the two largest models (FACT_BOOKING and FACT_FLIGHT_OPS):
+PROMPT_4_2 = """Now analyze the query performance of our dbt models. For the two largest models (FACT_BOOKING and DIM_FLIGHT):
 
 1. Run EXPLAIN on the model SQL and analyze the query profile
 2. Check for:
@@ -85,13 +85,13 @@ PROMPT_4_2 = """Now analyze the query performance of our dbt models. For the two
    - **Bytes scanned**: How much data is being read relative to output?
 
 3. Based on typical query patterns for an airline EDW:
-   - Analysts filter by: date range, route (origin/destination), fare class
-   - Operations filter by: flight date, aircraft, status
-   - Loyalty team filters by: passenger, tier, transaction date
+   - Analysts filter by: booking date range, route (origin/destination), fare class
+   - Operations filter by: departure date, aircraft, flight status
+   - Loyalty team filters by: passenger, loyalty tier
 
    Recommend clustering keys for:
    - FACT_BOOKING
-   - FACT_FLIGHT_OPS
+   - DIM_FLIGHT
    - DIM_PASSENGER
 
 4. Show the specific ALTER TABLE statements to apply the clustering
@@ -109,13 +109,13 @@ SELECT *
 FROM TABLE(GET_QUERY_OPERATOR_STATS(LAST_QUERY_ID()));
 
 -- Recommend clustering based on query patterns
-ALTER TABLE EDW_AC.MARTS.FACT_BOOKING
+ALTER ICEBERG TABLE EDW.GOLD.FACT_BOOKING
   CLUSTER BY (BOOKING_DATE, ORIGIN_AIRPORT, FARE_CLASS);
 
-ALTER TABLE EDW_AC.MARTS.FACT_FLIGHT_OPS
-  CLUSTER BY (DEPARTURE_DATE, AIRCRAFT_ID, STATUS);
+ALTER ICEBERG TABLE EDW.GOLD.DIM_FLIGHT
+  CLUSTER BY (DEPARTURE_TS, AIRCRAFT_ID, STATUS);
 
-ALTER TABLE EDW_AC.MARTS.DIM_PASSENGER
+ALTER ICEBERG TABLE EDW.GOLD.DIM_PASSENGER
   CLUSTER BY (LOYALTY_TIER, HOME_AIRPORT);
 ```
 
@@ -173,10 +173,10 @@ PRIORITIZED FINDINGS
 --------------------
 | # | Category      | Sev  | Model         | Issue                    |
 |----|---------------|------|---------------|--------------------------|
-| 1  | Anti-Pattern  | HIGH | fact_booking  | Implicit cast on amount  |
-| 2  | Performance   | HIGH | fact_booking  | No clustering key        |
-| 3  | Anti-Pattern  | HIGH | fact_flight   | Non-sargable DATE()      |
-| 4  | Standard      | MED  | dim_passenger | CTE naming               |
+| 1  | Anti-Pattern  | HIGH | fact_booking   | Implicit cast on amount  |
+| 2  | Performance   | HIGH | fact_booking   | No clustering key        |
+| 3  | Anti-Pattern  | HIGH | dim_flight     | Non-sargable DATE()      |
+| 4  | Standard      | MED  | dim_passenger  | CTE naming               |
 | ...
 ```
 

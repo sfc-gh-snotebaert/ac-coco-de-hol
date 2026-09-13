@@ -1,136 +1,90 @@
 import streamlit as st
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(1, "Environment Setup", "9:10 AM", "15 min", "Multi-layer database architecture, warehouse, and Openflow runtime verification")
+render_session_header(1, "Review Current Configuration", "9:10 AM", "15 min", "Explore the pre-provisioned Snowflake objects and verify the Openflow deployment and runtime are ready")
 
 render_technologies_used([
-    {"name": "Multi-Layer Architecture", "description": "Separate databases for raw ingestion (AIRLINE_OPS) and curated warehouse (EDW) enforce clear data ownership and access boundaries.", "icon": "layers"},
-    {"name": "Openflow Runtime", "description": "Snowflake's managed connector platform for replicating data from external databases into Snowflake in near real-time.", "icon": "sync"},
-    {"name": "Batch Control Pattern", "description": "An audit table tracking every ingestion batch: start/end time, row counts, and status. Essential for enterprise observability.", "icon": "fact_check"},
+    {"name": "Snowflake Account Objects", "description": "Databases, schemas, and tables that have been pre-provisioned for this workshop: AIRLINE_OPS (CDC destination) and PG_SETUP (source database connection details).", "icon": "inventory_2"},
+    {"name": "Openflow Deployments", "description": "The account-level container that hosts Openflow runtimes and connectors. Deployments manage the compute infrastructure for data replication.", "icon": "deployed_code"},
+    {"name": "Openflow Runtimes", "description": "The managed compute engine (SPCS-based) that executes Openflow connectors. It handles scheduling, retries, and monitoring of replication jobs.", "icon": "sync"},
 ])
 
 
-PROMPT_1_1 = """Show information about the following objects:
+PROMPT_1_1 = """Review the current objects in the account:
 
-1. AIRLINE_OPS schemas and contents
-2. PG_SETUP schemas and contents
+1. Show the schemas and tables in the AIRLINE_OPS database
+2. Show the schemas and tables in the PG_SETUP database
+3. Show the contents of PG_SETUP.CONFIG.PG_INSTANCE_INFO
 
-"""
+Report what you find."""
 
-render_prompt("Prompt 1.1", "Create Databases, Schemas & Warehouse", PROMPT_1_1)
+render_prompt("Prompt 1.1", "Review Pre-Provisioned Objects", PROMPT_1_1)
 
 render_explanation("What this prompt does", """
-Reviews the existing objects to understand the current states before we create an openflow connector
+Explores the two databases that have been pre-provisioned for this workshop:
+
+```sql
+-- CDC destination (currently empty schemas)
+SHOW SCHEMAS IN DATABASE AIRLINE_OPS;
+SHOW TABLES IN SCHEMA AIRLINE_OPS.RESERVATIONS;
+SHOW TABLES IN SCHEMA AIRLINE_OPS.FLIGHT_OPS;
+
+-- Source database connection details
+SHOW SCHEMAS IN DATABASE PG_SETUP;
+SELECT * FROM PG_SETUP.CONFIG.PG_INSTANCE_INFO;
 ```
 
-**Why two databases?** Separating raw and curated data enforces clear boundaries: raw tables are append-only landing zones owned by the ingestion process, while EDW tables are governed, tested, and optimized for consumers.
+**What you should see:**
+- `AIRLINE_OPS` — an empty database with `RESERVATIONS` and `FLIGHT_OPS` schemas. The Openflow connector will create and populate the tables here.
+- `PG_SETUP` — the `CONFIG.PG_INSTANCE_INFO` table holding the Postgres instance host and access role credentials (including the `snowflake_admin` user) for the PG1 instance running the `airline_ops` database.
+
+**Why review first?** Before creating a connector, always confirm the destination is empty (no name collisions) and you know where the source credentials live. This is the same discipline you'd apply in a real production deployment.
 """)
 
 
-PROMPT_1_2 = """Verify that Openflow is available and ready on this account:
+PROMPT_1_2 = """Review the Openflow deployment and runtime configuration on this account:
 
-1. Show any existing Openflow deployments
-2. Show any existing Openflow runtimes
+1. Show all Openflow deployments and their status
+2. Show all Openflow runtimes and their status (deployment, node type, role)
 3. Show any existing Openflow connectors
 
 Report what you find."""
 
-render_prompt("Prompt 1.2", "Verify Openflow Readiness", PROMPT_1_2)
+render_prompt("Prompt 1.2", "Verify Openflow Deployment & Runtime", PROMPT_1_2)
 
 render_explanation("What this prompt does", """
-Checks Openflow configuration for existing deployments and runtimes and confirm no connector exists.
+Verifies the Openflow infrastructure that the connector will run on:
 
 ```sql
+SHOW OPENFLOW DEPLOYMENTS;
 SHOW OPENFLOW RUNTIMES;
-SHOW OPENFLOW CONNECTOR TYPES;
-
--- If no runtime exists:
-CREATE OPENFLOW RUNTIME AC_OPENFLOW_RT
-  WAREHOUSE = AC_DE_WH;
+SHOW OPENFLOW CONNECTORS;
 ```
 
-The **Openflow Runtime** is the compute engine that runs connectors. It manages the lifecycle of data replication jobs.
-""")
+**What you should see:**
+- `DEPLOYMENT_DEV` — an active Snowflake-type Openflow deployment
+- `OPENFLOW_DB.RUNTIME.RUNTIME_PG` — an active runtime in DEPLOYMENT_DEV, executing as `OPENFLOW_RUNTIME_PG_ROLE` with the Postgres external access integration attached
+- **No connectors yet** — the `PG_CDC_CONNECTOR` is created in the next session
 
-PROMPT_1_3 = """Verify that Openflow is available and ready on this account:
+**Key concepts:**
+- The **deployment** hosts the Openflow control plane and event table
+- The **runtime** is the SPCS compute engine that runs connector jobs; its external access integration whitelists the Postgres host so the connector can reach PG1 over the network
 
-1. Show any existing Openflow deployments
-2. Show any existing Openflow runtimes
-3. Show any existing Openflow connectors
-
-Report what you find."""
-
-render_prompt("Prompt 1.3", "Verify Openflow Readiness", PROMPT_1_3)
-
-render_explanation("What this prompt does", """
-Checks Openflow availability and creates the runtime if needed:
-
-```sql
-SHOW OPENFLOW RUNTIMES;
-SHOW OPENFLOW CONNECTOR TYPES;
-
--- If no runtime exists:
-CREATE OPENFLOW RUNTIME AC_OPENFLOW_RT
-  WAREHOUSE = AC_DE_WH;
-```
-
-The **Openflow Runtime** is the compute engine that runs connectors. It manages the lifecycle of data replication jobs.
-""")
-
-PROMPT_1_4 = """In RAW_AC.INGESTION, create a batch control table called BATCH_CONTROL with the following columns:
-
-- BATCH_ID (NUMBER, auto-increment, primary key)
-- SOURCE_TABLE (VARCHAR, not null) — the source table name
-- SOURCE_SYSTEM (VARCHAR, default 'POSTGRES') — identifies the source system
-- BATCH_START_TS (TIMESTAMP_NTZ, not null) — when ingestion started
-- BATCH_END_TS (TIMESTAMP_NTZ) — when ingestion completed
-- ROWS_LOADED (NUMBER) — count of rows loaded in this batch
-- STATUS (VARCHAR, not null) — one of: RUNNING, SUCCESS, FAILED
-- ERROR_MESSAGE (VARCHAR) — error details if failed
-- CREATED_BY (VARCHAR, default CURRENT_USER())
-
-Also create a view called BATCH_SUMMARY that shows the latest batch per source table with its status and row count.
-
-Execute all SQL."""
-
-render_prompt("Prompt 1.4", "Create Batch Control & Audit", PROMPT_1_3)
-
-render_explanation("What this prompt does", """
-Creates the observability foundation for enterprise pipelines:
-
-```sql
-CREATE TABLE RAW_AC.INGESTION.BATCH_CONTROL (
-    BATCH_ID NUMBER AUTOINCREMENT PRIMARY KEY,
-    SOURCE_TABLE VARCHAR NOT NULL,
-    SOURCE_SYSTEM VARCHAR DEFAULT 'POSTGRES',
-    BATCH_START_TS TIMESTAMP_NTZ NOT NULL,
-    BATCH_END_TS TIMESTAMP_NTZ,
-    ROWS_LOADED NUMBER,
-    STATUS VARCHAR NOT NULL,
-    ERROR_MESSAGE VARCHAR,
-    CREATED_BY VARCHAR DEFAULT CURRENT_USER()
-);
-
-CREATE VIEW RAW_AC.INGESTION.BATCH_SUMMARY AS
-SELECT SOURCE_TABLE, STATUS, ROWS_LOADED, BATCH_END_TS
-FROM BATCH_CONTROL
-QUALIFY ROW_NUMBER() OVER (PARTITION BY SOURCE_TABLE ORDER BY BATCH_ID DESC) = 1;
-```
-
-**Why batch control?** In enterprise environments, you need to answer: "When did this data arrive? How many rows? Did it succeed?" This table provides that audit trail.
+If the deployment or runtime is not active, notify the workshop facilitator before continuing.
 """)
 
 
 render_key_concepts([
-    {"term": "Multi-Layer Architecture", "definition": "A design pattern separating raw (landing), staging (cleaned), and marts (business-ready) layers. Each layer has distinct ownership, quality expectations, and access controls."},
-    {"term": "Openflow Runtime", "definition": "The managed compute environment that executes Openflow connectors. It runs within SPCS (Snowpark Container Services) and handles scheduling, retries, and monitoring."},
-    {"term": "Batch Control", "definition": "An operational metadata table that records every data load operation. Used for debugging failures, measuring freshness, and proving data lineage to auditors."},
+    {"term": "Openflow Deployment", "definition": "The account-level container for Openflow objects. It manages the event table (telemetry) and hosts runtimes. Our lab uses DEPLOYMENT_DEV, pre-provisioned on each account."},
+    {"term": "Openflow Runtime", "definition": "A SPCS-based compute pool managed by Openflow that executes connector replication jobs. RUNTIME_PG is pre-provisioned with network egress to the PG1 Postgres instance."},
+    {"term": "CDC Destination", "definition": "The AIRLINE_OPS database with empty RESERVATIONS and FLIGHT_OPS schemas. The Openflow connector creates and continuously populates tables here from the source Postgres."},
+    {"term": "PG_SETUP.CONFIG.PG_INSTANCE_INFO", "definition": "Configuration table holding the PG1 instance connection details: host/port and access role credentials (application and snowflake_admin users). The connector prompt reads credentials from here."},
 ])
 
 render_what_you_built([
-    "RAW_AC database with INGESTION schema (raw landing zone)",
-    "EDW_AC database with STAGING and MARTS schemas (curated layer)",
-    "AC_DE_WH warehouse (Medium, auto-suspend 60s)",
-    "Openflow runtime verified and ready",
-    "BATCH_CONTROL table and BATCH_SUMMARY view for audit",
+    "Confirmed AIRLINE_OPS destination is empty and ready for CDC",
+    "Located PG1 connection details in PG_SETUP.CONFIG.PG_INSTANCE_INFO",
+    "Verified DEPLOYMENT_DEV is active",
+    "Verified RUNTIME_PG is active with the correct role and network access",
+    "Confirmed no connector exists yet (created in Session 2)",
 ])

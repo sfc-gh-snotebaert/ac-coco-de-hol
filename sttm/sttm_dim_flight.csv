@@ -1,0 +1,48 @@
+================================================================================
+COVER SHEET
+================================================================================
+Title,Source to Target Mapping – DIM_FLIGHT
+Project Name,EDW Phase 1
+Document Creator,AC235328-SF@AIRCANADA.CA
+Version,1.0
+Date,2026-09-16
+
+================================================================================
+VERSION CONTROL
+================================================================================
+Version,Revision Date,Revision Author,Project,Subject,Revision Notes,Approved By,Approved Date
+1.0,2026-09-16,AC235328-SF@AIRCANADA.CA,EDW Phase 1,Source to Target Mapping – DIM_FLIGHT,Initial version,,
+
+================================================================================
+DATA DICTIONARY
+================================================================================
+Attribute Name,Table Name,Description
+DIM_FLIGHT_KEY,DIM_FLIGHT,Surrogate primary key for the flight dimension
+FLIGHT_ID,DIM_FLIGHT,Operational flight identifier from the source system
+FLIGHT_NUMBER,DIM_FLIGHT,Marketing flight number (e.g. AC8650)
+ORIGIN_AIRPORT,DIM_FLIGHT,IATA code of the origin airport (FK to DIM_AIRPORT)
+DESTINATION_AIRPORT,DIM_FLIGHT,IATA code of the destination airport (FK to DIM_AIRPORT)
+DEPARTURE_TS,DIM_FLIGHT,Scheduled departure timestamp (UTC)
+ARRIVAL_TS,DIM_FLIGHT,Scheduled arrival timestamp (UTC)
+AIRCRAFT_ID,DIM_FLIGHT,Tail number / aircraft identifier operating the flight
+STATUS,DIM_FLIGHT,Current operational status of the flight
+CREATEDBATCHLOGID,DIM_FLIGHT,Batch log ID of the ETL run that inserted this record
+UPDATEDBATCHLOGID,DIM_FLIGHT,Batch log ID of the most recent ETL run that updated this record
+UPDATETYPE,DIM_FLIGHT,Last DML operation applied to this record: INSERT UPDATE or DELETE
+
+================================================================================
+STTM
+================================================================================
+TARGET_TYPE,TARGET_TABLE_NAME,PHYSICAL_ORDER,TARGET_COLUMN_NAME,TARGET_DATA_TYPE,TARGET_PRECISION,TARGET_COLUMN_DESCRIPTION,KEY_TYPE,TARGET_NULLABLE,DATA_SENSITIVITY,PII_FLAG,PII_TYPE,TYPE_OF_DE_IDENTIFICATION_MECHANISM,TRANSFORMATION_LOGIC,SOURCE_TABLE_NAME,SOURCE_COLUMN_NAME,NOTES
+Not Applicable,DIM_FLIGHT,1,DIM_FLIGHT_KEY,BIGINT,,Surrogate primary key for the flight dimension,PK,No,Internal Data,No,,,AUTOINCREMENT,,,
+Type 1,DIM_FLIGHT,2,FLIGHT_ID,BIGINT,,Operational flight identifier from the source system,AK,No,Internal Data,No,,,Direct Mapping,FLIGHT_OPS.FLIGHTS,FLIGHT_ID,
+Type 1,DIM_FLIGHT,3,FLIGHT_NUMBER,VARCHAR(10),,Marketing flight number (e.g. AC8650),,No,Internal Data,No,,,UPPER(TRIM(FLIGHT_NUMBER)),FLIGHT_OPS.FLIGHTS,FLIGHT_NUMBER,
+Type 1,DIM_FLIGHT,4,ORIGIN_AIRPORT,VARCHAR(3),,IATA code of the origin airport (FK to DIM_AIRPORT),FK,No,Internal Data,No,,,Direct Mapping,FLIGHT_OPS.FLIGHTS,ORIGIN,
+Type 1,DIM_FLIGHT,5,DESTINATION_AIRPORT,VARCHAR(3),,IATA code of the destination airport (FK to DIM_AIRPORT),FK,No,Internal Data,No,,,Direct Mapping,FLIGHT_OPS.FLIGHTS,DESTINATION,
+Type 1,DIM_FLIGHT,6,DEPARTURE_TS,TIMESTAMP_NTZ,,Scheduled departure timestamp (UTC),,No,Internal Data,No,,,CONVERT_TIMEZONE('UTC'::DEPARTURE_TS::TIMESTAMP_NTZ),FLIGHT_OPS.FLIGHTS,DEPARTURE_TS,Assume source timestamps stored in UTC; if source is local use CONVERT_TIMEZONE
+Type 1,DIM_FLIGHT,7,ARRIVAL_TS,TIMESTAMP_NTZ,,Scheduled arrival timestamp (UTC),,No,Internal Data,No,,,CONVERT_TIMEZONE('UTC'::ARRIVAL_TS::TIMESTAMP_NTZ),FLIGHT_OPS.FLIGHTS,ARRIVAL_TS,Same conversion rule as DEPARTURE_TS
+Type 1,DIM_FLIGHT,8,AIRCRAFT_ID,VARCHAR(10),,Tail number / aircraft identifier operating the flight,,No,Internal Data,No,,,UPPER(TRIM(AIRCRAFT_ID)),FLIGHT_OPS.FLIGHTS,AIRCRAFT_ID,
+Type 1,DIM_FLIGHT,9,STATUS,VARCHAR(20),,Current operational status of the flight,,No,Internal Data,No,,,UPPER(TRIM(STATUS)),FLIGHT_OPS.FLIGHTS,STATUS,
+Technical Field,DIM_FLIGHT,10,CREATEDBATCHLOGID,BIGINT,,Batch log ID of the ETL run that inserted this record,,No,Internal Data,No,,,ETL_BATCH_LOG_ID,,,
+Technical Field,DIM_FLIGHT,11,UPDATEDBATCHLOGID,BIGINT,,Batch log ID of the most recent ETL run that updated this record,,Yes,Internal Data,No,,,ETL_BATCH_LOG_ID,,,
+Technical Field,DIM_FLIGHT,12,UPDATETYPE,VARCHAR(10),,Last DML operation applied to this record: INSERT UPDATE or DELETE,,No,Internal Data,No,,,'INSERT',,,
