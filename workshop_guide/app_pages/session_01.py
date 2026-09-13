@@ -4,47 +4,23 @@ from components import render_session_header, render_prompt, render_explanation,
 render_session_header(1, "Environment Setup", "9:10 AM", "15 min", "Multi-layer database architecture, warehouse, and Openflow runtime verification")
 
 render_technologies_used([
-    {"name": "Multi-Layer Architecture", "description": "Separate databases for raw ingestion (RAW_AC) and curated warehouse (EDW_AC) enforce clear data ownership and access boundaries.", "icon": "layers"},
+    {"name": "Multi-Layer Architecture", "description": "Separate databases for raw ingestion (AIRLINE_OPS) and curated warehouse (EDW) enforce clear data ownership and access boundaries.", "icon": "layers"},
     {"name": "Openflow Runtime", "description": "Snowflake's managed connector platform for replicating data from external databases into Snowflake in near real-time.", "icon": "sync"},
     {"name": "Batch Control Pattern", "description": "An audit table tracking every ingestion batch: start/end time, row counts, and status. Essential for enterprise observability.", "icon": "fact_check"},
 ])
 
 
-PROMPT_1_1 = """Create the following Snowflake objects for our Air Canada data engineering workshop:
+PROMPT_1_1 = """Show information about the following objects:
 
-1. A database called RAW_AC (this is the raw ingestion layer)
-2. A schema called INGESTION inside RAW_AC
-3. A database called EDW_AC (this is the curated warehouse layer)
-4. Schemas called STAGING and MARTS inside EDW_AC
-5. A warehouse called AC_DE_WH (size MEDIUM, auto-suspend after 60 seconds, auto-resume enabled)
-6. Set the session context to use RAW_AC.INGESTION and the new warehouse
+1. AIRLINE_OPS schemas and contents
+2. PG_SETUP schemas and contents
 
-Execute all SQL and confirm each object was created."""
+"""
 
 render_prompt("Prompt 1.1", "Create Databases, Schemas & Warehouse", PROMPT_1_1)
 
 render_explanation("What this prompt does", """
-Creates the multi-layer architecture:
-
-```sql
--- Raw ingestion layer
-CREATE DATABASE RAW_AC;
-CREATE SCHEMA RAW_AC.INGESTION;
-
--- Curated warehouse layer
-CREATE DATABASE EDW_AC;
-CREATE SCHEMA EDW_AC.STAGING;
-CREATE SCHEMA EDW_AC.MARTS;
-
--- Compute
-CREATE WAREHOUSE AC_DE_WH
-  WAREHOUSE_SIZE = 'MEDIUM'
-  AUTO_SUSPEND = 60
-  AUTO_RESUME = TRUE;
-
-USE DATABASE RAW_AC;
-USE SCHEMA INGESTION;
-USE WAREHOUSE AC_DE_WH;
+Reviews the existing objects to understand the current states before we create an openflow connector
 ```
 
 **Why two databases?** Separating raw and curated data enforces clear boundaries: raw tables are append-only landing zones owned by the ingestion process, while EDW tables are governed, tested, and optimized for consumers.
@@ -53,13 +29,38 @@ USE WAREHOUSE AC_DE_WH;
 
 PROMPT_1_2 = """Verify that Openflow is available and ready on this account:
 
-1. Show any existing Openflow runtimes
-2. Show available Openflow connector types
-3. If no runtime exists, create one called AC_OPENFLOW_RT using warehouse AC_DE_WH
+1. Show any existing Openflow deployments
+2. Show any existing Openflow runtimes
+3. Show any existing Openflow connectors
 
 Report what you find."""
 
 render_prompt("Prompt 1.2", "Verify Openflow Readiness", PROMPT_1_2)
+
+render_explanation("What this prompt does", """
+Checks Openflow configuration for existing deployments and runtimes and confirm no connector exists.
+
+```sql
+SHOW OPENFLOW RUNTIMES;
+SHOW OPENFLOW CONNECTOR TYPES;
+
+-- If no runtime exists:
+CREATE OPENFLOW RUNTIME AC_OPENFLOW_RT
+  WAREHOUSE = AC_DE_WH;
+```
+
+The **Openflow Runtime** is the compute engine that runs connectors. It manages the lifecycle of data replication jobs.
+""")
+
+PROMPT_1_3 = """Verify that Openflow is available and ready on this account:
+
+1. Show any existing Openflow deployments
+2. Show any existing Openflow runtimes
+3. Show any existing Openflow connectors
+
+Report what you find."""
+
+render_prompt("Prompt 1.3", "Verify Openflow Readiness", PROMPT_1_3)
 
 render_explanation("What this prompt does", """
 Checks Openflow availability and creates the runtime if needed:
@@ -76,8 +77,7 @@ CREATE OPENFLOW RUNTIME AC_OPENFLOW_RT
 The **Openflow Runtime** is the compute engine that runs connectors. It manages the lifecycle of data replication jobs.
 """)
 
-
-PROMPT_1_3 = """In RAW_AC.INGESTION, create a batch control table called BATCH_CONTROL with the following columns:
+PROMPT_1_4 = """In RAW_AC.INGESTION, create a batch control table called BATCH_CONTROL with the following columns:
 
 - BATCH_ID (NUMBER, auto-increment, primary key)
 - SOURCE_TABLE (VARCHAR, not null) — the source table name
@@ -93,7 +93,7 @@ Also create a view called BATCH_SUMMARY that shows the latest batch per source t
 
 Execute all SQL."""
 
-render_prompt("Prompt 1.3", "Create Batch Control & Audit", PROMPT_1_3)
+render_prompt("Prompt 1.4", "Create Batch Control & Audit", PROMPT_1_3)
 
 render_explanation("What this prompt does", """
 Creates the observability foundation for enterprise pipelines:
