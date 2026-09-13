@@ -87,4 +87,4 @@ render_what_you_built([
     "Verified DEPLOYMENT_DEV is active",
     "Verified RUNTIME_PG is active with the correct role and network access",
     "Confirmed no connector exists yet (created in Session 2)",
-])
+], session_num=1)

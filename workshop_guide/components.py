@@ -1,8 +1,8 @@
 import streamlit as st
 
 SESSION_PROMPTS = {
-    1: ["Prompt 1.1", "Prompt 1.2", "Prompt 1.3"],
-    2: ["Prompt 2.1", "Prompt 2.2", "Prompt 2.3"],
+    1: ["Prompt 1.1", "Prompt 1.2"],
+    2: ["Prompt 2.1"],
     3: ["Prompt 3.1", "Prompt 3.2", "Prompt 3.3"],
     4: ["Prompt 4.1", "Prompt 4.2", "Prompt 4.3"],
     5: ["Prompt 5.1", "Prompt 5.2"],
@@ -95,7 +95,9 @@ def render_key_concepts(concepts: list[dict]):
             st.markdown(concept["definition"])
 
 
-def render_what_you_built(items: list[str]):
+def render_what_you_built(items: list[str], session_num: int = 0):
     st.markdown("##### :material/check_circle: What you built in this session")
+    done = is_session_complete(session_num) if session_num else False
+    badge = ":green-badge[Done]" if done else ":gray-badge[Pending]"
     for item in items:
-        st.markdown(f"- :green-badge[Done] {item}")
+        st.markdown(f"- {badge} {item}")

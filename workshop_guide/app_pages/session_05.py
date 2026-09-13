@@ -107,4 +107,4 @@ render_what_you_built([
     "Trigger phrases for natural language invocation",
     "Validated skill output against Session 4 baseline",
     "Reusable workflow any team member can invoke",
-])
+], session_num=5)

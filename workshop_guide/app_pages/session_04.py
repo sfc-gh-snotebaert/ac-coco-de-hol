@@ -198,4 +198,4 @@ render_what_you_built([
     "Clustering key recommendations for fact and dimension tables",
     "Refactored SQL for the highest-severity issues",
     "Professional optimization report ready for team lead review",
-])
+], session_num=4)

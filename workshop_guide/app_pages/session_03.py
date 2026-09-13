@@ -255,4 +255,4 @@ render_what_you_built([
     "DIM_PASSENGER with full SCD Type 2 logic (versioning, hash change detection, soft deletes)",
     "~12 data quality tests derived from STTM metadata",
     "Consolidated DQ summary report validating the EDW layer",
-])
+], session_num=3)

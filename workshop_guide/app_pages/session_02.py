@@ -86,4 +86,4 @@ render_what_you_built([
     "Live replication of flight_ops and reservations schemas into AIRLINE_OPS",
     "4 replicated tables: AIRPORTS, FLIGHTS, PASSENGERS, BOOKINGS",
     "Continuous CDC from the airline_ops source via the openflow_pub publication",
-])
+], session_num=2)
