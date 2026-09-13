@@ -30,11 +30,11 @@ All files use `{{VARIABLE_NAME}}` placeholders. When generating a new workshop, 
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `EVENT_DATE` | Date string | September 15, 2026 |
-| `EVENT_TIME_RANGE` | Time range | 9:00 AM to 11:30 AM |
-| `VENUE_NAME` | Venue name | Air Canada Centre |
+| `EVENT_DATE` | Date string | September 16, 2026 |
+| `EVENT_TIME_RANGE` | Time range | 9:00 AM to 11:00 AM |
+| `VENUE_NAME` | Venue name | Air Canada Office |
 | `VENUE_CITY` | City/province | Montreal, QC |
-| `SIGNUP_LINK` | Trial signup URL with tracking | https://signup.snowflake.com/?t=... |
+| `SIGNUP_LINK` | Trial signup URL with tracking | No Link Provided |
 | `RECOMMENDED_REGION` | AWS region suggestion | AWS Canada (Central) |
 
 ### Schedule Variables
@@ -51,20 +51,20 @@ All files use `{{VARIABLE_NAME}}` placeholders. When generating a new workshop, 
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `WAREHOUSE_NAME` | Snowflake warehouse | AC_DE_WH |
-| `OPENFLOW_RUNTIME` | Openflow runtime name | AC_OPENFLOW_RT |
+| `WAREHOUSE_NAME` | Snowflake warehouse | COMPUTE_WH |
+| `OPENFLOW_RUNTIME` | Openflow runtime name | RUNTIME_PG |
 
 ### Source Database Variables
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `SOURCE_HOST` | Postgres hostname | ac-source-db.us-east-1.rds.amazonaws.com |
+| `SOURCE_HOST` | Postgres hostname | Details in PG_SETUP.CONFIG.PG_INSTANCE_INFO |
 | `SOURCE_PORT` | Postgres port | 5432 |
-| `SOURCE_DB` | Source database name | aircanada_ops |
-| `SOURCE_SCHEMA_LIST` | Schemas to replicate | reservations, flight_ops, maintenance, loyalty |
-| `SOURCE_USER` | Source DB username | readonly_user |
-| `SOURCE_PASSWORD` | Source DB password | (provided at workshop) |
-| `NUM_SOURCE_TABLES` | Number of source tables | 6 |
+| `SOURCE_DB` | Source database name | airline_ops |
+| `SOURCE_SCHEMA_LIST` | Schemas to replicate | reservations, flight_ops |
+| `SOURCE_USER` | Source DB username | snowflake_admin |
+| `SOURCE_PASSWORD` | Source DB password | DBA_PASSWORD column in PG_SETUP.CONFIG.PG_INSTANCE_INFO|
+| `NUM_SOURCE_TABLES` | Number of source tables | 4 |
 
 ### STTM & dbt Variables
 

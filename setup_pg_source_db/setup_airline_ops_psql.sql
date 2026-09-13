@@ -1,5 +1,5 @@
 -- ============================================================================
--- Air Canada HOL — Source Database Setup
+-- Air Canada HOL — Source Database Setup when running from Coco desktop with psql
 -- Target: Snowflake Postgres instance PG01, database: airline_ops
 -- Creates schemas, tables, and synthetic data for the workshop
 --
