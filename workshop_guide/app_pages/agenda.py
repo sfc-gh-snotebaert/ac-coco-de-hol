@@ -3,14 +3,13 @@ import streamlit as st
 st.title("Workshop agenda")
 
 AGENDA = [
-    ("8:30 AM", "Arrival & Coffee", None, None),
     ("9:00 AM", "Welcome & Workshop Overview", None, None),
-    ("9:10 AM", "Session 1: Review Current Configuration", "15 min", "1"),
-    ("9:25 AM", "Session 2: Create Openflow Postgres Connector", "40 min", "2"),
-    ("10:05 AM", ":orange-badge[BREAK]", None, None),
-    ("10:20 AM", "Session 3: Create dbt Project from STTM Files", "45 min", "3"),
-    ("11:05 AM", "Session 4: Code Review & Optimization", "35 min", "4"),
-    ("11:40 AM", "Session 5: Data Engineer Skill (Stretch)", "15 min", "5"),
+    ("9:05 AM", "Session 1: Review Current Configuration", "10 min", "1"),
+    ("9:15 AM", "Session 2: Create Openflow Postgres Connector", "30 min", "2"),
+    ("9:45 AM", "Session 3: Create dbt Project from STTM Files", "40 min", "3"),
+    ("10:25 AM", ":orange-badge[BREAK]", None, None),
+    ("10:30 AM", "Session 4: Code Review & Optimization", "20 min", "4"),
+    ("10:50 AM", "Session 5: Data Engineer Skill (Stretch)", "10 min", "5"),
 ]
 
 for time, title, duration, session_num in AGENDA:
@@ -48,5 +47,5 @@ with st.container(border=True):
     st.markdown("""
 :material/location_on: **Air Canada Centre, Montreal, QC**
 
-September 15, 2026 — 9:00 AM to 11:30 AM
+September 15, 2026 — 9:00 AM to 11:00 AM
 """)

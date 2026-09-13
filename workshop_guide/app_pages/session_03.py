@@ -1,7 +1,7 @@
 import streamlit as st
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(3, "Create dbt Project from STTM Files", "10:20 AM", "45 min", "dbt project generated from enterprise STTMs — staging models plus Iceberg dimensional marts in EDW.GOLD with SCD2 and automated tests")
+render_session_header(3, "Create dbt Project from STTM Files", "9:45 AM", "40 min", "dbt project generated from enterprise STTMs — staging models plus Iceberg dimensional marts in EDW.GOLD with SCD2 and automated tests")
 
 render_technologies_used([
     {"name": "dbt (Data Build Tool)", "description": "A SQL-first transformation framework. Models are SELECT statements; dbt handles DDL, dependencies, testing, and documentation.", "icon": "build_circle"},

@@ -1,7 +1,7 @@
 import streamlit as st
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(4, "Code Review & Optimization", "11:05 AM", "35 min", "SQL anti-pattern detection, query profile analysis, and clustering recommendations")
+render_session_header(4, "Code Review & Optimization", "10:30 AM", "20 min", "SQL anti-pattern detection, query profile analysis, and clustering recommendations")
 
 render_technologies_used([
     {"name": "SQL Anti-Pattern Detection", "description": "Systematic review of SQL for common pitfalls: non-sargable predicates, implicit casts, SELECT *, missing filters, and Snowflake-specific traps.", "icon": "bug_report"},

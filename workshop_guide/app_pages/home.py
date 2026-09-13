@@ -8,7 +8,7 @@ st.space("small")
 col1, col2, col3 = st.columns(3)
 col1.metric("Sections", "5", help="Hands-on lab sections")
 col2.metric("Prompts", "11", help="Total prompts across all sessions")
-col3.metric("Duration", "2.5 hrs", help="Total workshop time")
+col3.metric("Duration", "2 hrs", help="Total workshop time")
 
 st.space("medium")
 
@@ -70,4 +70,4 @@ with st.container(border=True):
 """)
 
 st.space("medium")
-st.caption("Built for the September 15, 2026 workshop  :material/location_on:  Air Canada Centre, Montreal, QC")
+st.caption("Built for the September 15, 2026 workshop  :material/location_on:  Air Canada Centre, Montreal, QC  |  9:00 AM – 11:00 AM")

@@ -1,7 +1,7 @@
 import streamlit as st
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(2, "Create Openflow Postgres Connector", "9:25 AM", "40 min", "Gen2 Postgres CDC connector replicating airline_ops into AIRLINE_OPS via Openflow")
+render_session_header(2, "Create Openflow Postgres Connector", "9:15 AM", "30 min", "Gen2 Postgres CDC connector replicating airline_ops into AIRLINE_OPS via Openflow")
 
 render_technologies_used([
     {"name": "Openflow Gen2 Connectors", "description": "Managed CDC connectors that replicate data from external databases (Postgres, MySQL, SQL Server) into Snowflake with minimal configuration.", "icon": "cable"},

@@ -1,7 +1,7 @@
 import streamlit as st
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(5, "Data Engineer Skill (Stretch)", "11:40 AM", "15 min", "Reusable Cortex Code skill that packages the code review workflow for any dbt project")
+render_session_header(5, "Data Engineer Skill (Stretch)", "10:50 AM", "10 min", "Reusable Cortex Code skill that packages the code review workflow for any dbt project")
 
 st.info("This is a **stretch session** — complete it if time allows. It builds on the code review workflow from Session 4.")
 

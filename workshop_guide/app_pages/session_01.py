@@ -1,7 +1,7 @@
 import streamlit as st
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(1, "Review Current Configuration", "9:10 AM", "15 min", "Explore the pre-provisioned Snowflake objects and verify the Openflow deployment and runtime are ready")
+render_session_header(1, "Review Current Configuration", "9:05 AM", "10 min", "Explore the pre-provisioned Snowflake objects and verify the Openflow deployment and runtime are ready")
 
 render_technologies_used([
     {"name": "Snowflake Account Objects", "description": "Databases, schemas, and tables that have been pre-provisioned for this workshop: AIRLINE_OPS (CDC destination) and PG_SETUP (source database connection details).", "icon": "inventory_2"},
