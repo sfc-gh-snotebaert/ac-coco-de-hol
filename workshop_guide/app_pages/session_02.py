@@ -76,7 +76,7 @@ Once the initial load completes, AIRLINE_OPS contains live replicated copies of 
 render_key_concepts([
     {"term": "CDC (Change Data Capture)", "definition": "A technique that captures row-level changes (inserts, updates, deletes) from a source database and applies them to a target. Openflow's Postgres connector reads the write-ahead log (WAL) through a publication for low-latency replication."},
     {"term": "Publication (openflow_pub)", "definition": "A Postgres publication defines which tables are exposed for logical replication. The connector subscribes to the publication to receive change events from the WAL."},
-    {"term": "Snowflake Secret", "description": "A first-class Snowflake object that stores credentials securely. Connector configuration references the secret — no plain-text passwords in DDL."},
+    {"term": "Snowflake Secret", "definition": "A first-class Snowflake object that stores credentials securely. Connector configuration references the secret — no plain-text passwords in DDL."},
     {"term": "Connector Lifecycle", "definition": "CREATE → RESUME → monitor initial load → continuous CDC. The connector manages table creation, schema changes, and error recovery automatically within the target schemas."},
 ])
 
