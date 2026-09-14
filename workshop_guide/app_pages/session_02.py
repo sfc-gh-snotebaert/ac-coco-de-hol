@@ -10,23 +10,24 @@ render_technologies_used([
 ])
 
 
-PROMPT_2_1 = """Add a Gen2 Postgres connector named PG_CDC_CONNECTOR to RUNTIME_PG.
+PROMPT_2_1 = """Add a Gen2 Postgres connector named PG_CDC_CONNECTOR_LABUSERXX to RUNTIME_PG.
 
 The Postgres instance information is in PG_SETUP.CONFIG.PG_INSTANCE_INFO table.
 Use the snowflake_admin credentials.
 
 The Postgres database to connect is airline_ops and the schemas to replicate are flight_ops and reservations.
 
-The publication name is openflow_pub. The target Snowflake database is AIRLINE_OPS.
+The publication name is openflow_pub. The target Snowflake database is AIRLINE_OPS_LABUSERXX.
 
 After creating the connector:
 1. Start the connector
 2. Monitor its progress and wait until the initial load completes for all tables
-3. Show the row counts of all replicated tables in AIRLINE_OPS
+3. Show the row counts of all replicated tables in AIRLINE_OPS_LABUSERXX
 
 Report the results."""
 
 render_prompt("Prompt 2.1", "Create & Start the PG_CDC_CONNECTOR", PROMPT_2_1)
+st.warning(":material/edit: **Before pasting:** replace `XX` in the 2 occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
 
 render_explanation("What this prompt does", """
 Creates the CDC pipeline from Postgres into Snowflake:
@@ -39,7 +40,7 @@ CREATE OR REPLACE SECRET OPENFLOW_DB.RUNTIME.PG_CREDENTIALS
   PASSWORD = '<from PG_INSTANCE_INFO>';
 
 -- 2. Create the Gen2 Postgres connector on the pre-provisioned runtime
-CREATE OPENFLOW CONNECTOR OPENFLOW_DB.RUNTIME.PG_CDC_CONNECTOR
+CREATE OPENFLOW CONNECTOR OPENFLOW_DB.RUNTIME.PG_CDC_CONNECTOR_LABUSERXX
   RUNTIME = OPENFLOW_DB.RUNTIME.RUNTIME_PG
   SOURCE = POSTGRES
   CONNECTION = (
@@ -51,15 +52,15 @@ CREATE OPENFLOW CONNECTOR OPENFLOW_DB.RUNTIME.PG_CDC_CONNECTOR
     SCHEMAS = ('flight_ops', 'reservations'),
     PUBLICATION = 'openflow_pub'
   )
-  TARGET_DATABASE = 'AIRLINE_OPS';
+  TARGET_DATABASE = 'AIRLINE_OPS_LABUSERXX';
 
 -- 3. Start replication and monitor
-ALTER OPENFLOW CONNECTOR OPENFLOW_DB.RUNTIME.PG_CDC_CONNECTOR RESUME;
-SELECT * FROM TABLE(SHOW_OPENFLOW_CONNECTOR_STATUS('OPENFLOW_DB.RUNTIME.PG_CDC_CONNECTOR'));
+ALTER OPENFLOW CONNECTOR OPENFLOW_DB.RUNTIME.PG_CDC_CONNECTOR_LABUSERXX RESUME;
+SELECT * FROM TABLE(SHOW_OPENFLOW_CONNECTOR_STATUS('OPENFLOW_DB.RUNTIME.PG_CDC_CONNECTOR_LABUSERXX'));
 
 -- 4. Verify the landing zone
 SELECT TABLE_SCHEMA, TABLE_NAME, ROW_COUNT
-FROM AIRLINE_OPS.INFORMATION_SCHEMA.TABLES
+FROM AIRLINE_OPS_LABUSERXX.INFORMATION_SCHEMA.TABLES
 ORDER BY TABLE_SCHEMA, TABLE_NAME;
 ```
 
@@ -69,7 +70,7 @@ ORDER BY TABLE_SCHEMA, TABLE_NAME;
 - The publication `openflow_pub` was created on the source; the connector subscribes to it for CDC
 - The runtime role was already granted `CREATE TABLE` on `AIRLINE_OPS.RESERVATIONS` and `AIRLINE_OPS.FLIGHT_OPS`, so the connector can create its target tables automatically
 
-Once the initial load completes, AIRLINE_OPS contains live replicated copies of `airports`, `flights`, `passengers`, and `bookings` — and stays in sync as the source changes.
+Once the initial load completes, AIRLINE_OPS_LABUSERXX contains live replicated copies of `airports`, `flights`, `passengers`, and `bookings` — and stays in sync as the source changes.
 """)
 
 st.space("small")
@@ -99,9 +100,9 @@ render_key_concepts([
 ])
 
 render_what_you_built([
-    "PG_CDC_CONNECTOR on RUNTIME_PG (Gen2 Postgres CDC)",
+    "PG_CDC_CONNECTOR_LABUSERXX on RUNTIME_PG (Gen2 Postgres CDC)",
     "Credentials stored as a Snowflake Secret from PG_INSTANCE_INFO values",
-    "Live replication of flight_ops and reservations schemas into AIRLINE_OPS",
+    "Live replication of flight_ops and reservations schemas into AIRLINE_OPS_LABUSERXX",
     "4 replicated tables: AIRPORTS, FLIGHTS, PASSENGERS, BOOKINGS",
     "Continuous CDC from the airline_ops source via the openflow_pub publication",
 ], session_num=2)
