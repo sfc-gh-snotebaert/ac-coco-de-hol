@@ -5,71 +5,28 @@ st.markdown("Set up your Snowflake environment for the workshop")
 
 st.space("small")
 
-st.markdown("#### Step 1: Sign up for a free trial")
+st.markdown("#### Step 1: Gather your credentials")
 
 with st.container(border=True):
     st.markdown("""
-Go to **[signup.snowflake.com](https://signup.snowflake.com)** and fill out the registration form with your name, email, and company.
+Before the workshop, you received an **email from the facilitator** containing your pre-provisioned Snowflake account details:
 
-On the **Choose your Snowflake edition** screen, select:
+- **Account URL** — the link to your Snowflake environment
+- **Username**
+- **Password**
 
-| Setting | Recommended value |
-|---------|-------------------|
-| **Cloud provider** | Amazon Web Services (AWS) |
-| **Edition** | Enterprise |
-| **Region** | AWS Canada (Central) or US East (N. Virginia) |
+Locate this email and keep the credentials handy.
 
-Enterprise edition is recommended because it includes all the features we use in this workshop.
+:material/info: Check your spam folder if you don't see the email. If you can't find it, contact the workshop facilitator.
 """)
 
 st.space("small")
 
-st.markdown("#### Step 2: Activate your account")
+st.markdown("#### Step 2: Log in to the account")
 
 with st.container(border=True):
     st.markdown("""
-After submitting the form, Snowflake sends an **activation link** to the email address you provided. Click the link to set your password and log in.
+Open the **account URL** from the email in your browser and log in with the provided **username** and **password**.
 
-:material/info: The activation email typically arrives within a few minutes. Check your spam folder if you don't see it.
+Once logged in to Snowsight, open **Cortex Code** from the left navigation panel — this is the AI coding assistant where you will paste all prompts from this workshop.
 """)
-
-st.space("small")
-
-st.markdown("#### Step 3: Open Cortex Code")
-
-with st.container(border=True):
-    st.markdown("""
-Once logged in to Snowsight, open **Cortex Code** from the left navigation panel. This is the AI coding assistant where you will paste all prompts from this workshop.
-
-Confirm you are using the **ACCOUNTADMIN** role — you can check and switch roles in the bottom-left of the Snowsight UI.
-""")
-
-st.space("small")
-
-st.markdown("#### Step 4: Verify Openflow is enabled")
-
-with st.container(border=True):
-    st.markdown("""
-This workshop uses **Openflow** for data ingestion from external databases. Your account has been pre-provisioned with Openflow enabled.
-
-Verify it is available by running this SQL in a worksheet:
-
-```sql
-SHOW OPENFLOW RUNTIMES;
-```
-
-If you see an empty result set (no error), Openflow is enabled. If you get an error, notify the workshop facilitator.
-
-:material/info: Openflow requires SPCS (Snowpark Container Services) which is pre-enabled on your trial account for this workshop.
-""")
-
-st.space("small")
-
-st.markdown("#### Free trial details")
-
-col1, col2, col3 = st.columns(3)
-col1.metric("Duration", "30 days", help="Free trial duration from activation")
-col2.metric("Credits", "$400", help="Complimentary Snowflake credits included")
-col3.metric("Credit card", "Not required", help="No payment method needed to start")
-
-st.caption("The free trial provides more than enough credits to complete the entire workshop")

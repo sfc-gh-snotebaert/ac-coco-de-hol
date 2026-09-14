@@ -7,9 +7,8 @@ AGENDA = [
     ("9:05 AM", "Session 1: Review Current Configuration", "10 min", "1"),
     ("9:15 AM", "Session 2: Create Openflow Postgres Connector", "30 min", "2"),
     ("9:45 AM", "Session 3: Create dbt Project from STTM Files", "40 min", "3"),
-    ("10:25 AM", ":orange-badge[BREAK]", None, None),
-    ("10:30 AM", "Session 4: Code Review & Optimization", "20 min", "4"),
-    ("10:50 AM", "Session 5: Data Engineer Skill (Stretch)", "10 min", "5"),
+    ("10:25 AM", "Session 4: Code Review & Optimization", "20 min", "4"),
+    ("10:45 AM", "Session 5: Data Engineer Skill (Stretch)", "10 min", "5"),
 ]
 
 for time, title, duration, session_num in AGENDA:
@@ -17,10 +16,6 @@ for time, title, duration, session_num in AGENDA:
         col1, col2 = st.columns([1, 4])
         col1.markdown(f"**{time}**")
         col2.markdown(f":material/play_circle: **{title}** :gray-badge[{duration}]")
-    elif "BREAK" in title:
-        col1, col2 = st.columns([1, 4])
-        col1.markdown(f"**{time}**")
-        col2.markdown(f"{title}")
     else:
         col1, col2 = st.columns([1, 4])
         col1.markdown(f"**{time}**")
