@@ -1,7 +1,10 @@
 import streamlit as st
+from pathlib import Path
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(3, "Create dbt Project from STTM Files", "9:45 AM", "40 min", "dbt project generated from enterprise STTMs — staging models plus Iceberg dimensional marts in EDW.GOLD with SCD2 and automated tests")
+STTM_DIR = Path(__file__).resolve().parent.parent.parent / "sttm"
+
+render_session_header(3, "Create dbt Project from STTM Files", "9:45 AM", "40 min", "dbt project generated from enterprise STTMs — Iceberg dimensional marts in EDW.GOLD with SCD2 and automated tests")
 
 render_technologies_used([
     {"name": "dbt (Data Build Tool)", "description": "A SQL-first transformation framework. Models are SELECT statements; dbt handles DDL, dependencies, testing, and documentation.", "icon": "build_circle"},
@@ -10,80 +13,66 @@ render_technologies_used([
 ])
 
 st.markdown("""
-**Before running the prompts below**, review the four STTM documents:
+**Before running the prompts below**, review the three STTM documents:
 
-1. Download the STTMs from the repo:
-   - [sttm_dim_airport.csv](https://github.com/sfc-gh-snotebaert/ac-coco-de-hol/raw/main/sttm/sttm_dim_airport.csv)
-   - [sttm_dim_flight.csv](https://github.com/sfc-gh-snotebaert/ac-coco-de-hol/raw/main/sttm/sttm_dim_flight.csv)
-   - [sttm_dim_passenger.csv](https://github.com/sfc-gh-snotebaert/ac-coco-de-hol/raw/main/sttm/sttm_dim_passenger.csv)
-   - [sttm_fact_booking.csv](https://github.com/sfc-gh-snotebaert/ac-coco-de-hol/raw/main/sttm/sttm_fact_booking.csv)
+1. Download the STTM files and review their contents
 2. Each has four sections: Cover Sheet, Version Control, Data Dictionary, and the STTM mapping itself
 3. Note the key columns: `TARGET_TYPE` (Type 1, Type 2, Technical Field), `TRANSFORMATION_LOGIC`, `PII_FLAG`, and `KEY_TYPE`
 4. DIM_PASSENGER is the only SCD Type 2 table — the others are simple Type 1 loads with technical columns
-5. You will paste the STTM contents into the first prompt below
+5. Upload the 3 STTMs to the current CoCo chat session window
 """)
+
+st.markdown("##### STTM Downloads")
+_dl_cols = st.columns(3)
+for _col, _fname in zip(_dl_cols, [
+    "sttm_dim_flight.csv",
+    "sttm_dim_passenger.csv",
+    "sttm_fact_booking.csv",
+]):
+    _fpath = STTM_DIR / _fname
+    _col.download_button(
+        label=f":material/download: {_fname.replace('sttm_', '').replace('.csv', '').replace('_', ' ').upper()}",
+        data=_fpath.read_bytes(),
+        file_name=_fname,
+        mime="text/csv",
+        use_container_width=True,
+    )
 
 st.space("small")
 
 
-PROMPT_3_1 = """I have four enterprise Source-to-Target Mapping (STTM) documents that define the EDW GOLD layer for our Air Canada data platform. They are in the sttm/ folder of my current workspace: sttm_dim_airport.csv, sttm_dim_flight.csv, sttm_dim_passenger.csv, and sttm_fact_booking.csv. Read them.
+PROMPT_3_1 = """I have three enterprise Source-to-Target Mapping (STTM) documents that define the EDW GOLD layer for our Air Canada data platform. They are in the sttm/ folder of my current workspace: sttm_dim_flight.csv, sttm_dim_passenger.csv, and sttm_fact_booking.csv. Read them.
 
-Using these STTMs, generate a dbt project called ac_edw that implements all four GOLD tables:
+Using these STTMs, generate a dbt project called edw that implements all three GOLD tables:
 
 0. Prerequisites: create the EDW database with a GOLD schema if they do not exist (target: EDW.GOLD).
 
-1. Create a staging model in EDW.STAGING for each source table, reading from the Openflow-replicated tables in AIRLINE_OPS:
-   - stg_airports — from AIRLINE_OPS.FLIGHT_OPS.AIRPORTS
-   - stg_flights — from AIRLINE_OPS.FLIGHT_OPS.FLIGHTS
-   - stg_passengers — from AIRLINE_OPS.RESERVATIONS.PASSENGERS
-   - stg_bookings — from AIRLINE_OPS.RESERVATIONS.BOOKINGS
-   Each staging model applies the column mappings, type casts, and transformation logic defined in the STTMs.
+1. Create the mart models in EDW.GOLD, implementing each STTM exactly. Each mart reads directly from the Openflow-replicated source tables in AIRLINE_OPS (defined as dbt sources) and applies the column mappings, type casts, and transformation logic defined in the STTMs:
+   - DIM_FLIGHT
+   - DIM_PASSENGER
+   - FACT_BOOKING
 
-2. Create the mart models in EDW.GOLD, implementing each STTM exactly:
-   - DIM_AIRPORT — surrogate key, IATA_CODE business key, direct mappings, technical columns (CREATEDBATCHLOGID, UPDATEDBATCHLOGID, UPDATETYPE)
-   - DIM_FLIGHT — surrogate key, FLIGHT_ID business key, direct mappings, technical columns
-   - DIM_PASSENGER — full SCD Type 2: SCDSTARTDATETIME / SCDENDDATETIME, CURRENTFLAG, DELETEDFLAG, LATEARRIVINGFLAG, TYPE1HASH change detection (SHA2 over the Type 1 columns), CREATEDBATCHLOGID / UPDATEDBATCHLOGID, UPDATETYPE
-   - FACT_BOOKING — surrogate key, PNR business key, FK lookups to DIM_FLIGHT (by FLIGHT_ID) and DIM_PASSENGER (current record by PASSENGER_ID), measures and technical columns
+2. All mart models in EDW.GOLD must be materialized as Snowflake-managed Iceberg tables with Snowflake-managed storage: CREATE ICEBERG TABLE ... CATALOG = 'SNOWFLAKE' EXTERNAL_VOLUME = 'SNOWFLAKE_MANAGED'. Configure the dbt materialization accordingly (custom materialization or model config that emits the Iceberg DDL).
 
-3. All mart models in EDW.GOLD must be materialized as Snowflake-managed Iceberg tables with Snowflake-managed storage: CREATE ICEBERG TABLE ... CATALOG = 'SNOWFLAKE' EXTERNAL_VOLUME = 'SNOWFLAKE_MANAGED'. Configure the dbt materialization accordingly (custom materialization or model config that emits the Iceberg DDL).
-
-4. Use the dbt project structure: models/staging/, models/marts/, dbt_project.yml, sources.yml (pointing at AIRLINE_OPS), and profiles.yml connecting to Snowflake.
+3. Use the dbt project structure: models/marts/, dbt_project.yml, sources.yml (pointing at AIRLINE_OPS), and profiles.yml connecting to Snowflake.
 
 Generate all SQL model files and project configuration. Show the complete project structure and SQL for each model."""
 
 render_prompt("Prompt 3.1", "Generate dbt Project from STTMs", PROMPT_3_1)
 
 render_explanation("What this prompt does", """
-Generates a complete dbt project implementing the four STTM specifications:
+Generates a complete dbt project implementing the three STTM specifications:
 
 ```
-ac_edw/
+edw/
 ├── dbt_project.yml
 ├── profiles.yml
 ├── models/
 │   ├── sources.yml              # AIRLINE_OPS replicated tables
-│   ├── staging/
-│   │   ├── stg_airports.sql
-│   │   ├── stg_flights.sql
-│   │   ├── stg_passengers.sql
-│   │   └── stg_bookings.sql
 │   └── marts/
-│       ├── dim_airport.sql
 │       ├── dim_flight.sql
 │       ├── dim_passenger.sql
 │       └── fact_booking.sql
-```
-
-**Staging model** — standardizes the replicated source and applies STTM transformations:
-```sql
--- models/staging/stg_passengers.sql
-SELECT
-    PASSENGER_ID,
-    CONCAT_WS(' ', TRIM(FIRST_NAME), TRIM(LAST_NAME)) AS NAME_PASSENGER,
-    LOWER(TRIM(EMAIL)) AS EMAIL,
-    UPPER(TRIM(LOYALTY_TIER)) AS LOYALTY_TIER,
-    HOME_AIRPORT
-FROM {{ source('airline_ops', 'RESERVATIONS_PASSENGERS') }}
 ```
 
 **Mart model (Iceberg)** — the marts are created as Snowflake-managed Iceberg tables:
@@ -121,7 +110,7 @@ The STTM is the **contract** — Cortex Code translates it directly into executa
 """)
 
 
-PROMPT_3_2 = """For the ac_edw dbt project, generate a comprehensive test suite for the DIM_PASSENGER model based on its STTM metadata (sttm_dim_passenger.csv):
+PROMPT_3_2 = """For the edw dbt project, generate a comprehensive test suite for the DIM_PASSENGER model based on its STTM metadata (sttm_dim_passenger.csv):
 
 1. Schema tests (in schema.yml) derived from the STTM:
    - DIM_PASSENGER_KEY: not_null + unique (it's the PK per KEY_TYPE)
@@ -131,7 +120,6 @@ PROMPT_3_2 = """For the ac_edw dbt project, generate a comprehensive test suite 
    - DELETEDFLAG: accepted_values ['0', '1']
    - LATEARRIVINGFLAG: accepted_values ['Y', 'N']
    - UPDATETYPE: accepted_values ['INSERT', 'UPDATE', 'DELETE']
-   - HOME_AIRPORT: relationships test to DIM_AIRPORT.IATA_CODE (FK per KEY_TYPE)
 
 2. Custom data quality tests (in tests/ folder):
    - scd_no_overlapping_versions: For any PASSENGER_ID, date ranges (SCDSTARTDATETIME to SCDENDDATETIME) must not overlap
@@ -162,11 +150,6 @@ models:
           - not_null
           - unique:
               where: "CURRENTFLAG = '1' AND DELETEDFLAG = '0'"
-      - name: HOME_AIRPORT
-        tests:
-          - relationships:
-              to: ref('dim_airport')
-              field: IATA_CODE
       - name: UPDATETYPE
         tests:
           - accepted_values:
@@ -191,13 +174,13 @@ The key insight: **the STTM itself tells you what to test.** PK columns get uniq
 
 PROMPT_3_3 = """Now execute the dbt project and produce a data quality report:
 
-1. Run `dbt run` to build the staging and mart models in EDW
+1. Run `dbt run` to build the mart models in EDW
 2. Run `dbt test` to execute all schema tests and custom DQ tests
 3. Produce a consolidated summary report showing:
    - Total models built and their status (success/error)
    - Total tests run, passed, failed, and warned
    - For any failed tests: the test name, the model it applies to, and the number of failing rows
-   - Row counts for each GOLD table: DIM_AIRPORT, DIM_FLIGHT, DIM_PASSENGER, FACT_BOOKING
+   - Row counts for each GOLD table: DIM_FLIGHT, DIM_PASSENGER, FACT_BOOKING
    - For DIM_PASSENGER: distinct PASSENGER_ID count and count of current active records (CURRENTFLAG='1')
 
 4. If any tests fail, explain what the failures mean and suggest a fix
@@ -211,24 +194,23 @@ render_explanation("What this prompt does", """
 Runs the full dbt pipeline and produces a quality report:
 
 ```
-dbt run --project-dir ac_edw
-dbt test --project-dir ac_edw
+dbt run --project-dir edw
+dbt test --project-dir edw
 ```
 
 **Expected output:**
 ```
 DQ Summary Report
 =================
-Models: 8 built (4 staging + 4 marts) | 0 errors
+Models: 3 built (3 marts) | 0 errors
 Tests:  12 passed | 0 failed | 0 warned
 
 GOLD Layer (Iceberg tables in EDW.GOLD):
-  DIM_AIRPORT:      120 rows
   DIM_FLIGHT:     1,850 rows
   DIM_PASSENGER:  3,200 rows (2,980 current records)
   FACT_BOOKING:  12,400 rows
 
-SHOW ICEBERG TABLES IN EDW.GOLD → all 4 marts listed as Iceberg
+SHOW ICEBERG TABLES IN EDW.GOLD → all 3 marts listed as Iceberg
 ```
 
 This validates that:
@@ -249,9 +231,8 @@ render_key_concepts([
 ])
 
 render_what_you_built([
-    "dbt project (ac_edw) implementing all 4 STTMs",
-    "4 staging models reading from AIRLINE_OPS replicated tables",
-    "4 mart models in EDW.GOLD as Snowflake-managed Iceberg tables",
+    "dbt project (edw) implementing all 3 STTMs",
+    "3 mart models in EDW.GOLD as Snowflake-managed Iceberg tables",
     "DIM_PASSENGER with full SCD Type 2 logic (versioning, hash change detection, soft deletes)",
     "~12 data quality tests derived from STTM metadata",
     "Consolidated DQ summary report validating the EDW layer",

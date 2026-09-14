@@ -70,9 +70,9 @@ Structured markdown with severity, location, issue, fix
 """)
 
 
-PROMPT_5_2 = """Test the dbt-code-review skill by running it against just the staging models in our project.
+PROMPT_5_2 = """Test the dbt-code-review skill by running it against just the dimension models in our project.
 
-Use the trigger phrase "review my dbt project" and point it at the staging models only (models/staging/).
+Use the trigger phrase "review my dbt project" and point it at the dimension models only (models/marts/).
 
 Compare the output to what we got in Session 4:
 - Does it find the same issues?
@@ -87,7 +87,7 @@ render_explanation("What this prompt does", """
 Validates that the skill produces consistent, useful output by running it on a subset of models.
 
 **What to look for:**
-- Findings should be a subset of Session 4 results (staging-only)
+- Findings should be a subset of Session 4 results (dimension models only)
 - Report format should match the template defined in the skill
 - No false positives (issues flagged that aren't real problems)
 - Severity levels should be calibrated (a CTE naming issue shouldn't be HIGH)

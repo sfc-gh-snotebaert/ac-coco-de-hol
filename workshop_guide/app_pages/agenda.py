@@ -29,8 +29,8 @@ st.markdown("""
 |-------------|-------|---------|
 | **Databases** | 2 | `AIRLINE_OPS` (CDC landing zone), `EDW` (warehouse layer) |
 | **Openflow Connector** | 1 | `PG_CDC_CONNECTOR` — live Postgres CDC into AIRLINE_OPS |
-| **Iceberg Tables** | 4 | `EDW.GOLD.DIM_AIRPORT`, `DIM_FLIGHT`, `DIM_PASSENGER` (SCD2), `FACT_BOOKING` |
-| **dbt Models** | ~8 | 4 staging + 4 mart models (Iceberg in EDW.GOLD) |
+| **Iceberg Tables** | 3 | `EDW.GOLD.DIM_FLIGHT`, `DIM_PASSENGER` (SCD2), `FACT_BOOKING` |
+| **dbt Models** | 4 | Mart models (Iceberg in EDW.GOLD) |
 | **dbt Tests** | ~12 | not_null, unique, relationships, accepted_values, custom SCD integrity |
 | **Recommendations Report** | 1 | Clustering keys, anti-pattern fixes, performance improvements |
 """)

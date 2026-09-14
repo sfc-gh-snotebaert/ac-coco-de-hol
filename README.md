@@ -73,7 +73,7 @@ All files use `{{VARIABLE_NAME}}` placeholders. When generating a new workshop, 
 | `STTM_FILENAME` | STTM file name | sttm_dim_customer.csv |
 | `STTM_DOWNLOAD_URL` | URL to download the STTM | https://github.com/.../sttm_dim_customer.csv |
 | `STTM_CONTENT` | Full STTM document content (pasted into prompt) | (CSV content) |
-| `DBT_PROJECT_NAME` | dbt project name | ac_edw |
+| `DBT_PROJECT_NAME` | dbt project name | edw |
 | `NUM_DBT_MODELS` | Number of dbt models generated | 11 |
 | `NUM_DBT_TESTS` | Number of dbt tests generated | 12 |
 

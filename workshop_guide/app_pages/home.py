@@ -35,7 +35,7 @@ We'll build a complete data engineering platform covering:
 | Layer | What we build | Source |
 |-------|---------------|--------|
 | **Ingestion** | Openflow Gen2 CDC connector → AIRLINE_OPS | Postgres PG1 (airline_ops) |
-| **EDW** | dbt staging + Iceberg dimensional marts in EDW.GOLD, driven by STTMs | AIRLINE_OPS replicated tables |
+| **EDW** | dbt Iceberg dimensional marts in EDW.GOLD, driven by STTMs | AIRLINE_OPS replicated tables |
 | **Quality** | dbt tests as data quality gates, consolidated DQ summary report | Mart models |
 | **Optimization** | Code review, clustering recommendations, anti-pattern fixes | Generated SQL |
 """)
@@ -46,13 +46,13 @@ st.markdown("#### What we're building")
 
 with st.container(border=True):
     st.markdown("""
-In 2.5 hrs, we build an enterprise data engineering pipeline end-to-end:
+In 2 hrs, we build an enterprise data engineering pipeline end-to-end:
 
 **1. Review Current Configuration** — Explore the pre-provisioned AIRLINE_OPS and PG_SETUP databases and verify the Openflow deployment (DEPLOYMENT_DEV) and runtime (RUNTIME_PG) are active.
 
 **2. Create Openflow Postgres Connector** — Create PG_CDC_CONNECTOR on RUNTIME_PG, replicate the airline_ops source into AIRLINE_OPS via CDC, and verify the initial load.
 
-**3. Create dbt Project from STTM Files** — Accept four Source-to-Target Mapping documents, generate a dbt project with staging models and Iceberg dimensional marts in EDW.GOLD (with SCD2 in DIM_PASSENGER), run automated data quality tests, and produce a summary report.
+**3. Create dbt Project from STTM Files** — Accept three Source-to-Target Mapping documents, generate a dbt project with Iceberg dimensional marts in EDW.GOLD (with SCD2 in DIM_PASSENGER), run automated data quality tests, and produce a summary report.
 
 **4. Code Review & Optimization** — Use Cortex Code as a code review agent to scan for SQL anti-patterns, analyze query profiles, and recommend clustering strategies.
 

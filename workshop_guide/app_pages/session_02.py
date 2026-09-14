@@ -72,6 +72,24 @@ ORDER BY TABLE_SCHEMA, TABLE_NAME;
 Once the initial load completes, AIRLINE_OPS contains live replicated copies of `airports`, `flights`, `passengers`, and `bookings` — and stays in sync as the source changes.
 """)
 
+st.space("small")
+
+st.markdown("#### Step 2: Consult the connector telemetry")
+
+with st.container(border=True):
+    st.markdown("""
+The Openflow connector continuously generates **telemetry** — lifecycle events, replication progress, and errors — that you can query directly. The events land in the `OPENFLOW_DB.RUNTIME.OPENFLOW_EVENTS` event table:
+
+```sql
+SELECT TIMESTAMP, OBJECT_NAME, EVENT_TYPE, MESSAGE
+FROM OPENFLOW_DB.RUNTIME.OPENFLOW_EVENTS
+ORDER BY TIMESTAMP DESC
+LIMIT 50;
+```
+
+:material/info: In **Snowsight → Openflow → Connector Observability** you can also consult the connector logs through a visual dashboard — no SQL required. Use it to check connector health, drill into individual events, and troubleshoot replication issues.
+""")
+
 
 render_key_concepts([
     {"term": "CDC (Change Data Capture)", "definition": "A technique that captures row-level changes (inserts, updates, deletes) from a source database and applies them to a target. Openflow's Postgres connector reads the write-ahead log (WAL) through a publication for low-latency replication."},

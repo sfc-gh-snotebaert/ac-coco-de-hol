@@ -10,7 +10,7 @@ render_technologies_used([
 ])
 
 
-PROMPT_4_1 = """Review the dbt SQL models we generated in Session 3 for the ac_edw project.
+PROMPT_4_1 = """Review the dbt SQL models we generated in Session 3 for the edw project.
 
 Perform a comprehensive code review covering:
 
@@ -32,7 +32,7 @@ Perform a comprehensive code review covering:
    - Appropriate use of QUALIFY vs subquery for row_number filtering
    - MERGE vs DELETE+INSERT patterns
    - Proper NULL handling (NVL vs COALESCE vs IFNULL)
-   - Transient vs permanent table choices for staging
+   - Transient vs permanent table choices for marts
 
 For each issue found, report:
 - The file and line
@@ -49,7 +49,7 @@ render_explanation("What this prompt does", """
 Uses Cortex Code as a code review agent. It analyzes the generated SQL and produces findings like:
 
 ```
-CODE REVIEW REPORT — ac_edw
+CODE REVIEW REPORT — edw
 ==========================================
 
 FINDING 1 [HIGH] — Anti-Pattern: Implicit Type Cast
@@ -65,7 +65,7 @@ Fix:      WITH passenger_base AS (...)
 Reason:   CTE names should describe their content for readability
 
 FINDING 3 [LOW] — Best Practice: QUALIFY vs Subquery
-File: models/staging/stg_flights.sql, Line 15
+File: models/marts/dim_flight.sql, Line 15
 Current:  SELECT * FROM (SELECT ..., ROW_NUMBER() ...) WHERE rn = 1
 Fix:      SELECT ... QUALIFY ROW_NUMBER() OVER (...) = 1
 Reason:   QUALIFY is Snowflake-native, more readable, and avoids a subquery
@@ -129,7 +129,7 @@ ALTER ICEBERG TABLE EDW.GOLD.DIM_PASSENGER
 """)
 
 
-PROMPT_4_3 = """Produce a consolidated Optimization Recommendations Report for the entire ac_edw project.
+PROMPT_4_3 = """Produce a consolidated Optimization Recommendations Report for the entire edw project.
 
 The report should include:
 
@@ -158,7 +158,7 @@ Produces a complete, actionable optimization report:
 ```
 OPTIMIZATION RECOMMENDATIONS REPORT
 ====================================
-Project: ac_edw
+Project: edw
 Date: [today]
 Reviewer: Cortex Code
 
