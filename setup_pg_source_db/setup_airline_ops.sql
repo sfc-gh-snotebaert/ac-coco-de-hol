@@ -207,8 +207,6 @@ ORDER BY table_name;
 -- these tables into Snowflake.
 -- ============================================================================
 
-ALTER ROLE snowflake_admin WITH REPLICATION LOGIN;
-
 -- Publication covering all tables the Openflow connector should replicate.
 DROP PUBLICATION IF EXISTS openflow_pub;
 CREATE PUBLICATION openflow_pub

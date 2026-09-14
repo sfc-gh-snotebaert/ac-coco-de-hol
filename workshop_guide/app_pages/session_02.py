@@ -24,7 +24,7 @@ After creating the connector:
 2. Monitor its progress and wait until the initial load completes for all tables
 3. Show the row counts of all replicated tables in AIRLINE_OPS
 
-Execute all SQL and report the results."""
+Report the results."""
 
 render_prompt("Prompt 2.1", "Create & Start the PG_CDC_CONNECTOR", PROMPT_2_1)
 
