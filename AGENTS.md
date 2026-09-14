@@ -11,6 +11,9 @@ CREATE ICEBERG TABLE ... CATALOG = 'SNOWFLAKE' EXTERNAL_VOLUME = 'SNOWFLAKE_MANA
 In `dbt_project.yml`, add the following model config:
 
 ```yaml
+flags:
+  enable_iceberg_materializations: true
+
 models:
   +materialized: table
   +table_format: iceberg

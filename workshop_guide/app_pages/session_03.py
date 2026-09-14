@@ -12,6 +12,47 @@ render_technologies_used([
     {"name": "Snowflake-Managed Iceberg Tables", "description": "Iceberg tables with Snowflake as the catalog and Snowflake-managed storage (EXTERNAL_VOLUME = SNOWFLAKE_MANAGED). Open format, no external volume configuration required.", "icon": "table_view"},
 ])
 
+st.markdown("#### Step 1: Configure Iceberg as the default materialization")
+
+with st.container(border=True):
+    st.markdown("""
+Before generating any models, we add an instruction to the `AGENTS.md` file so that Cortex Code always materializes dbt models as **Snowflake-managed Iceberg tables**. This guarantees that every model in the project — current and future — lands in open Iceberg format without anyone having to remember to set it per model.
+""")
+
+PROMPT_3_0 = """Add the following configuration to the AGENTS.md file in my workspace. Include a short description explaining that this ensures all dbt models are materialized as Snowflake-managed Iceberg tables — open table format with Snowflake handling storage, no external volume setup required.
+
+```yaml
+flags:
+  enable_iceberg_materializations: true
+
+models:
+  +materialized: table
+  +table_format: iceberg
+  +external_volume: SNOWFLAKE_MANAGED
+```"""
+
+render_prompt("Prompt 3.0", "Set Iceberg Default in AGENTS.md", PROMPT_3_0)
+
+render_explanation("Why this matters", """
+By codifying the Iceberg configuration in `AGENTS.md`, we get:
+
+- **Consistency** — every dbt model across the project uses the same table format. No one-off config drift.
+- **Less prompt overhead** — you no longer need to mention Iceberg in every prompt. The agent reads `AGENTS.md` and applies it automatically.
+- **Open format by default** — the GOLD layer is readable by Spark, Trino, and other engines through the Iceberg REST catalog, while Snowflake manages all storage (no external volume or IAM setup required).
+
+The resulting `dbt_project.yml` will include:
+```yaml
+models:
+  +materialized: table
+  +table_format: iceberg
+  +external_volume: SNOWFLAKE_MANAGED
+```
+""")
+
+st.space("small")
+
+st.markdown("#### Step 2: Review & upload the STTMs")
+
 st.markdown("""
 **Before running the prompts below**, review the three STTM documents:
 
@@ -41,22 +82,18 @@ for _col, _fname in zip(_dl_cols, [
 st.space("small")
 
 
-PROMPT_3_1 = """I have three enterprise Source-to-Target Mapping (STTM) documents that define the EDW GOLD layer for our Air Canada data platform. They are in the sttm/ folder of my current workspace: sttm_dim_flight.csv, sttm_dim_passenger.csv, and sttm_fact_booking.csv. Read them.
+PROMPT_3_1 = """Read the three STTM files in the sttm/ folder: sttm_dim_flight.csv, sttm_dim_passenger.csv, sttm_fact_booking.csv.
 
-Using these STTMs, generate a dbt project called edw that implements all three GOLD tables:
+Generate a dbt project called edw that implements these three GOLD tables:
 
-0. Prerequisites: create the EDW database with a GOLD schema if they do not exist (target: EDW.GOLD).
-
-1. Create the mart models in EDW.GOLD, implementing each STTM exactly. Each mart reads directly from the Openflow-replicated source tables in AIRLINE_OPS (defined as dbt sources) and applies the column mappings, type casts, and transformation logic defined in the STTMs:
+1. Create the EDW database and GOLD schema if they do not exist.
+2. Create mart models in EDW.GOLD — one per STTM. Each reads directly from the AIRLINE_OPS source tables (dbt sources) and applies the mappings, casts, and transformation logic from the STTMs:
    - DIM_FLIGHT
    - DIM_PASSENGER
    - FACT_BOOKING
+3. Project structure: models/marts/, dbt_project.yml, sources.yml (AIRLINE_OPS), profiles.yml.
 
-2. All mart models in EDW.GOLD must be materialized as Snowflake-managed Iceberg tables with Snowflake-managed storage: CREATE ICEBERG TABLE ... CATALOG = 'SNOWFLAKE' EXTERNAL_VOLUME = 'SNOWFLAKE_MANAGED'. Configure the dbt materialization accordingly (custom materialization or model config that emits the Iceberg DDL).
-
-3. Use the dbt project structure: models/marts/, dbt_project.yml, sources.yml (pointing at AIRLINE_OPS), and profiles.yml connecting to Snowflake.
-
-Generate all SQL model files and project configuration. Show the complete project structure and SQL for each model."""
+Generate all files and show the complete project structure. Do not run the build or validate — we will do that interactively in the workspace using dbt commands."""
 
 render_prompt("Prompt 3.1", "Generate dbt Project from STTMs", PROMPT_3_1)
 
@@ -75,31 +112,7 @@ edw/
 │       └── fact_booking.sql
 ```
 
-**Mart model (Iceberg)** — the marts are created as Snowflake-managed Iceberg tables:
-```sql
--- The materialization emits DDL equivalent to:
-CREATE ICEBERG TABLE EDW.GOLD.DIM_PASSENGER (
-    DIM_PASSENGER_KEY BIGINT,   -- autoincrement surrogate key
-    PASSENGER_ID BIGINT,
-    NAME_PASSENGER VARCHAR(200),
-    EMAIL VARCHAR(200),
-    LOYALTY_TIER VARCHAR(20),
-    HOME_AIRPORT VARCHAR(3),
-    LATEARRIVINGFLAG CHAR(1),
-    CURRENTFLAG CHAR(1),
-    DELETEDFLAG CHAR(1),
-    SCDSTARTDATETIME TIMESTAMP_NTZ,
-    SCDENDDATETIME TIMESTAMP_NTZ,
-    TYPE1HASH VARCHAR(64),
-    CREATEDBATCHLOGID BIGINT,
-    UPDATEDBATCHLOGID BIGINT,
-    UPDATETYPE VARCHAR(10)
-)
-  CATALOG = 'SNOWFLAKE'
-  EXTERNAL_VOLUME = 'SNOWFLAKE_MANAGED';
-```
-
-**Why Iceberg with Snowflake-managed storage?** The GOLD layer becomes an open-format data product — readable by Spark, Trino, and other engines through the Iceberg REST catalog — while Snowflake stores and manages all the files (no external volume or IAM setup required).
+Because we set the Iceberg config in Step 1, all three models are automatically materialized as Snowflake-managed Iceberg tables — no per-model config needed.
 
 **DIM_PASSENGER SCD2 logic:**
 - New records → INSERT with CURRENTFLAG='1', UPDATETYPE='INSERT'

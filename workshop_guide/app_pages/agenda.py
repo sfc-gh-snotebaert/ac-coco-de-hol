@@ -42,5 +42,5 @@ with st.container(border=True):
     st.markdown("""
 :material/location_on: **Air Canada Centre, Montreal, QC**
 
-September 15, 2026 — 9:00 AM to 11:00 AM
+September 16, 2026 — 9:00 AM to 11:00 AM
 """)
