@@ -20,17 +20,16 @@ render_prompt("Prompt 3.0", "Create GOLD schema and set Iceberg as default table
 st.warning(":material/edit: **Before executing in CoCo:** replace `XX` in the occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
 
 render_explanation("What this prompt does", """
-Configures the database and creates the GOLD schema for Iceberg:
+Creates the GOLD schema with Iceberg defaults:
 
 ```sql
-ALTER DATABASE AIRLINE_OPS_LABUSERXX SET CATALOG = 'SNOWFLAKE';
-
 CREATE SCHEMA IF NOT EXISTS AIRLINE_OPS_LABUSERXX.GOLD
+  CATALOG = 'SNOWFLAKE'
   EXTERNAL_VOLUME = 'SNOWFLAKE_MANAGED'
   DEFAULT_METADATA_WRITE_FORMAT = 'ICEBERG';
 ```
 
-Setting the catalog at the **database level** is a prerequisite for Iceberg metadata at the schema level. Then, setting `EXTERNAL_VOLUME` and `DEFAULT_METADATA_WRITE_FORMAT` on the GOLD schema means every table created there automatically inherits Iceberg format — no per-table config needed. The GOLD layer is readable by Spark, Trino, and other engines through the Iceberg REST catalog, while Snowflake manages all storage.
+Setting `CATALOG`, `EXTERNAL_VOLUME`, and `DEFAULT_METADATA_WRITE_FORMAT` on the schema means every table created in GOLD automatically inherits Iceberg format — no per-table config needed. The GOLD layer is readable by Spark, Trino, and other engines through the Iceberg REST catalog, while Snowflake manages all storage.
 """)
 
 st.space("small")
