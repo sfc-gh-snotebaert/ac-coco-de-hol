@@ -14,10 +14,7 @@ render_technologies_used([
 
 st.markdown("#### Step 1: Configure Iceberg as the default table format for schema GOLD")
 
-PROMPT_3_0 = """Run these SQL statements:
-
-1. Set CATALOG = 'SNOWFLAKE' at the database level on AIRLINE_OPS_LABUSERXX (required before Iceberg metadata format can be used at the schema level).
-2. Create a schema called GOLD in AIRLINE_OPS_LABUSERXX with EXTERNAL_VOLUME = 'SNOWFLAKE_MANAGED' and DEFAULT_METADATA_WRITE_FORMAT = 'ICEBERG'."""
+PROMPT_3_0 = """Create a schema called GOLD in AIRLINE_OPS_LABUSERXX with CATALOG = 'SNOWFLAKE', EXTERNAL_VOLUME = 'SNOWFLAKE_MANAGED' and DEFAULT_METADATA_WRITE_FORMAT = 'ICEBERG'."""
 
 render_prompt("Prompt 3.0", "Create GOLD schema and set Iceberg as default table format", PROMPT_3_0)
 st.warning(":material/edit: **Before executing in CoCo:** replace `XX` in the occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
