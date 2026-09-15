@@ -12,41 +12,22 @@ render_technologies_used([
     {"name": "Snowflake-Managed Iceberg Tables", "description": "Iceberg tables with Snowflake as the catalog and Snowflake-managed storage (EXTERNAL_VOLUME = SNOWFLAKE_MANAGED). Open format, no external volume configuration required.", "icon": "table_view"},
 ])
 
-st.markdown("#### Step 1: Configure Iceberg as the default materialization")
+st.markdown("#### Step 1: Configure Iceberg as the default table format for schema GOLD")
 
-with st.container(border=True):
-    st.markdown("""
-Before generating any models, we add an instruction to the `AGENTS.md` file so that CoCo always materializes dbt models as **Snowflake-managed Iceberg tables**. This guarantees that every model in the project — current and future — lands in open Iceberg format without anyone having to remember to set it per model.
-""")
+PROMPT_3_0 = """Create a schema called GOLD in AIRLINE_OPS_LABUSERXX that uses SNOWFLAKE as the catalog and SNOWFLAKE_MANAGED as the external volume."""
 
-PROMPT_3_0 = """Add the following configuration to the AGENTS.md file in my workspace. Include a short description explaining that this ensures all dbt models are materialized as Snowflake-managed Iceberg tables — open table format with Snowflake handling storage, no external volume setup required.
+render_prompt("Prompt 3.0", "Create GOLD schema and set Iceberg as default table format", PROMPT_3_0)
+st.warning(":material/edit: **Before pasting:** replace `XX` in the occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
 
-```yaml
-flags:
-  enable_iceberg_materializations: true
+render_explanation("What this prompt does", """
+Creates the GOLD schema and configures it as an Iceberg schema:
 
-models:
-  +materialized: table
-  +table_format: iceberg
-  +external_volume: SNOWFLAKE_MANAGED
-```"""
-
-render_prompt("Prompt 3.0", "Set Iceberg Default in AGENTS.md", PROMPT_3_0)
-
-render_explanation("Why this matters", """
-By codifying the Iceberg configuration in `AGENTS.md`, we get:
-
-- **Consistency** — every dbt model across the project uses the same table format. No one-off config drift.
-- **Less prompt overhead** — you no longer need to mention Iceberg in every prompt. The agent reads `AGENTS.md` and applies it automatically.
-- **Open format by default** — the GOLD layer is readable by Spark, Trino, and other engines through the Iceberg REST catalog, while Snowflake manages all storage (no external volume or IAM setup required).
-
-The resulting `dbt_project.yml` will include:
-```yaml
-models:
-  +materialized: table
-  +table_format: iceberg
-  +external_volume: SNOWFLAKE_MANAGED
+```sql
+CREATE SCHEMA IF NOT EXISTS AIRLINE_OPS_LABUSERXX.GOLD;
+ALTER SCHEMA AIRLINE_OPS_LABUSERXX.GOLD SET CATALOG = 'SNOWFLAKE' EXTERNAL_VOLUME = 'SNOWFLAKE_MANAGED';
 ```
+
+Setting the catalog and external volume at the **schema level** means every table created in GOLD automatically inherits Iceberg format — no per-table or per-model config needed. The GOLD layer is readable by Spark, Trino, and other engines through the Iceberg REST catalog, while Snowflake manages all storage.
 """)
 
 st.space("small")
@@ -86,12 +67,11 @@ PROMPT_3_1 = """Read the three STTM files: sttm_dim_flight.csv, sttm_dim_passeng
 
 Generate a dbt project called edw that implements these three GOLD tables:
 
-1. Create the GOLD schema in AIRLINE_OPS_LABUSERXX if it does not exist.
-2. Create mart models in AIRLINE_OPS_LABUSERXX.GOLD schema — one per STTM. Each reads directly from the AIRLINE_OPS_LABUSERXX source tables (dbt sources) and applies the mappings, casts, and transformation logic from the STTMs:
+1. Create mart models in AIRLINE_OPS_LABUSERXX.GOLD schema — one per STTM. Each reads directly from the AIRLINE_OPS_LABUSERXX source tables (dbt sources) and applies the mappings, casts, and transformation logic from the STTMs:
    - DIM_FLIGHT
    - DIM_PASSENGER
    - FACT_BOOKING
-3. Project structure: models/marts/, dbt_project.yml, sources.yml (AIRLINE_OPS_LABUSERXX), profiles.yml.
+2. Project structure: models/marts/, dbt_project.yml, sources.yml (AIRLINE_OPS_LABUSERXX), profiles.yml.
 
 Generate all files and show the complete project structure. Do not run the build or validate — we will do that interactively in the workspace using dbt commands."""
 
@@ -113,7 +93,7 @@ edw/
 │       └── fact_booking.sql
 ```
 
-Because we set the Iceberg config in Step 1, all three models are automatically materialized as Snowflake-managed Iceberg tables — no per-model config needed.
+Because the GOLD schema was configured with Iceberg defaults in Step 1, all three models are automatically materialized as Snowflake-managed Iceberg tables — no per-model config needed.
 
 **DIM_PASSENGER SCD2 logic:**
 - New records → INSERT with CURRENTFLAG='1', UPDATETYPE='INSERT'
@@ -220,6 +200,44 @@ This validates that:
 - No overlapping date ranges, exactly one current record per active passenger
 - FK integrity holds (bookings reference real flights and passengers)
 - The GOLD layer is materialized as Snowflake-managed Iceberg tables
+""")
+
+
+PROMPT_3_4 = """Add the following instruction to the AGENTS.md file:
+
+When creating any new dbt model, always generate a corresponding schema test entry in a schema.yml file with the following baseline tests derived from the model's columns:
+
+- not_null on every primary key and required column
+- unique on primary key columns
+- accepted_values on any column with a known set of valid values (e.g. status fields, flags, type indicators)
+- relationships for any foreign key column, referencing the appropriate parent model and column
+
+These tests should be generated automatically alongside the model — do not wait for a separate prompt to add them."""
+
+render_prompt("Prompt 3.4", "Add default test generation rule to AGENTS.md", PROMPT_3_4)
+
+render_explanation("What this prompt does", """
+Adds a standing instruction to `AGENTS.md` so that CoCo automatically generates dbt schema tests every time it creates a new model — no separate prompt required.
+
+After this, any model CoCo generates will come with a `schema.yml` entry including:
+```yaml
+models:
+  - name: my_new_model
+    columns:
+      - name: MY_PK
+        tests: [not_null, unique]
+      - name: STATUS
+        tests:
+          - accepted_values:
+              values: ['ACTIVE', 'INACTIVE']
+      - name: PARENT_FK
+        tests:
+          - relationships:
+              to: ref('parent_model')
+              field: PARENT_PK
+```
+
+This ensures data quality testing is a **default behavior**, not an afterthought.
 """)
 
 
