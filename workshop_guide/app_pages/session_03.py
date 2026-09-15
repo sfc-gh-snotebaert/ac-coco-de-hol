@@ -153,23 +153,21 @@ The key insight: **the STTM itself tells you what to test.** PK columns get uniq
 """)
 
 
-PROMPT_3_3 = """Now execute the dbt project and produce a data quality report:
-
-1. Run `dbt run` to build the mart models in AIRLINE_OPS_LABUSERXX.GOLD
-2. Run `dbt test` to execute all schema tests and custom DQ tests
-3. Produce a consolidated summary report showing:
+PROMPT_3_3 = """1. Run `dbt test` to execute all schema tests and custom DQ tests
+2. Produce a consolidated summary report showing:
    - Total models built and their status (success/error)
    - Total tests run, passed, failed, and warned
    - For any failed tests: the test name, the model it applies to, and the number of failing rows
    - Row counts for each GOLD table: DIM_FLIGHT, DIM_PASSENGER, FACT_BOOKING
    - For DIM_PASSENGER: distinct PASSENGER_ID count and count of current active records (CURRENTFLAG='1')
 
-4. If any tests fail, explain what the failures mean and suggest a fix
-5. Confirm the GOLD tables are Iceberg tables (SHOW ICEBERG TABLES IN AIRLINE_OPS_LABUSERXX.GOLD) and show a sample of 5 rows from DIM_PASSENGER to verify the SCD2 structure
+3. If any tests fail, explain what the failures mean and suggest a fix
+4. Confirm the GOLD tables are Iceberg tables (SHOW ICEBERG TABLES IN AIRLINE_OPS_LABUSERXX.GOLD) and show a sample of 5 rows from DIM_PASSENGER to verify the SCD2 structure
 
 Execute and show the full report."""
 
-render_prompt("Prompt 3.3", "Execute Pipeline & DQ Report", PROMPT_3_3)
+render_prompt("Prompt 3.3", "Execute Tests & DQ Report", PROMPT_3_3)
+st.warning(":material/edit: **Before pasting:** replace `XX` in the 3 occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
 
 render_explanation("What this prompt does", """
 Runs the full dbt pipeline and produces a quality report:
