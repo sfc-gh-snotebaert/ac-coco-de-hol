@@ -105,7 +105,7 @@ The STTM is the **contract** — CoCo translates it directly into executable dbt
 """)
 
 
-PROMPT_3_2 = """Generate a dbt test suite for DIM_PASSENGER based on its STTM (sttm_dim_passenger.csv):
+PROMPT_3_2 = """Add tests to the DIM_PASSENGER model based on its STTM (sttm_dim_passenger.csv):
 
 1. Schema tests derived from the STTM columns (not_null, unique, accepted_values, relationships)
 2. Custom SCD2 integrity tests: no overlapping date ranges, exactly one current record per passenger, hash consistency
@@ -114,6 +114,7 @@ PROMPT_3_2 = """Generate a dbt test suite for DIM_PASSENGER based on its STTM (s
 Generate all test files."""
 
 render_prompt("Prompt 3.2", "Generate dbt Tests for DIM_PASSENGER", PROMPT_3_2)
+st.info(":material/terminal: Use the `dbt test` command in the UI (bottom pane).")
 
 render_explanation("What this prompt does", """
 Creates tests derived directly from the STTM metadata — not guesswork:
@@ -154,16 +155,15 @@ The key insight: **the STTM itself tells you what to test.** PK columns get uniq
 """)
 
 
-PROMPT_3_3 = """1. Run `dbt test` to execute all schema tests and custom DQ tests
-2. Produce a consolidated summary report showing:
+PROMPT_3_3 = """1. Using existing logs and tests results, produce a consolidated summary report showing:
    - Total models built and their status (success/error)
    - Total tests run, passed, failed, and warned
    - For any failed tests: the test name, the model it applies to, and the number of failing rows
    - Row counts for each GOLD table: DIM_FLIGHT, DIM_PASSENGER, FACT_BOOKING
    - For DIM_PASSENGER: distinct PASSENGER_ID count and count of current active records (CURRENTFLAG='1')
 
-3. If any tests fail, explain what the failures mean and suggest a fix
-4. Confirm the GOLD tables are Iceberg tables (SHOW ICEBERG TABLES IN AIRLINE_OPS_LABUSERXX.GOLD) and show a sample of 5 rows from DIM_PASSENGER to verify the SCD2 structure
+2. If any tests fail, explain what the failures mean and suggest a fix
+3. Confirm the GOLD tables are Iceberg tables (SHOW ICEBERG TABLES IN AIRLINE_OPS_LABUSERXX.GOLD) and show a sample of 5 rows from DIM_PASSENGER to verify the SCD2 structure
 
 Execute and show the full report."""
 
