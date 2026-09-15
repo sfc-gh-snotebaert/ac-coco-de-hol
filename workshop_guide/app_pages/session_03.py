@@ -4,7 +4,7 @@ from components import render_session_header, render_prompt, render_explanation,
 
 STTM_DIR = Path(__file__).resolve().parent.parent.parent / "sttm"
 
-render_session_header(3, "Create dbt Project from STTM Files", "9:45 AM", "40 min", "dbt project generated from enterprise STTMs — Iceberg dimensional marts in EDW.GOLD with SCD2 and automated tests")
+render_session_header(3, "Create dbt Project from STTM Files", "9:45 AM", "40 min", "dbt project generated from enterprise STTMs — Iceberg dimensional marts in AIRLINE_OPS_LABUSERXX.GOLD with SCD2 and automated tests")
 
 render_technologies_used([
     {"name": "dbt (Data Build Tool)", "description": "A SQL-first transformation framework. Models are SELECT statements; dbt handles DDL, dependencies, testing, and documentation.", "icon": "build_circle"},
@@ -16,7 +16,7 @@ st.markdown("#### Step 1: Configure Iceberg as the default materialization")
 
 with st.container(border=True):
     st.markdown("""
-Before generating any models, we add an instruction to the `AGENTS.md` file so that Cortex Code always materializes dbt models as **Snowflake-managed Iceberg tables**. This guarantees that every model in the project — current and future — lands in open Iceberg format without anyone having to remember to set it per model.
+Before generating any models, we add an instruction to the `AGENTS.md` file so that CoCo always materializes dbt models as **Snowflake-managed Iceberg tables**. This guarantees that every model in the project — current and future — lands in open Iceberg format without anyone having to remember to set it per model.
 """)
 
 PROMPT_3_0 = """Add the following configuration to the AGENTS.md file in my workspace. Include a short description explaining that this ensures all dbt models are materialized as Snowflake-managed Iceberg tables — open table format with Snowflake handling storage, no external volume setup required.
@@ -82,20 +82,21 @@ for _col, _fname in zip(_dl_cols, [
 st.space("small")
 
 
-PROMPT_3_1 = """Read the three STTM files in the sttm/ folder: sttm_dim_flight.csv, sttm_dim_passenger.csv, sttm_fact_booking.csv.
+PROMPT_3_1 = """Read the three STTM files: sttm_dim_flight.csv, sttm_dim_passenger.csv, sttm_fact_booking.csv.
 
 Generate a dbt project called edw that implements these three GOLD tables:
 
-1. Create the EDW database and GOLD schema if they do not exist.
-2. Create mart models in EDW.GOLD — one per STTM. Each reads directly from the AIRLINE_OPS source tables (dbt sources) and applies the mappings, casts, and transformation logic from the STTMs:
+1. Create the GOLD schema in AIRLINE_OPS_LABUSERXX if it does not exist.
+2. Create mart models in AIRLINE_OPS_LABUSERXX.GOLD schema — one per STTM. Each reads directly from the AIRLINE_OPS_LABUSERXX source tables (dbt sources) and applies the mappings, casts, and transformation logic from the STTMs:
    - DIM_FLIGHT
    - DIM_PASSENGER
    - FACT_BOOKING
-3. Project structure: models/marts/, dbt_project.yml, sources.yml (AIRLINE_OPS), profiles.yml.
+3. Project structure: models/marts/, dbt_project.yml, sources.yml (AIRLINE_OPS_LABUSERXX), profiles.yml.
 
 Generate all files and show the complete project structure. Do not run the build or validate — we will do that interactively in the workspace using dbt commands."""
 
 render_prompt("Prompt 3.1", "Generate dbt Project from STTMs", PROMPT_3_1)
+st.warning(":material/edit: **Before pasting:** replace `XX` in the 3 occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
 
 render_explanation("What this prompt does", """
 Generates a complete dbt project implementing the three STTM specifications:
@@ -105,7 +106,7 @@ edw/
 ├── dbt_project.yml
 ├── profiles.yml
 ├── models/
-│   ├── sources.yml              # AIRLINE_OPS replicated tables
+│   ├── sources.yml              # AIRLINE_OPS_LABUSERXX replicated tables
 │   └── marts/
 │       ├── dim_flight.sql
 │       ├── dim_passenger.sql
@@ -119,30 +120,17 @@ Because we set the Iceberg config in Step 1, all three models are automatically 
 - Changed records (TYPE1HASH mismatch) → expire old (set SCDENDDATETIME, CURRENTFLAG='0') + insert new version with UPDATETYPE='UPDATE'
 - Deleted records → set DELETEDFLAG='1', UPDATETYPE='DELETE'
 
-The STTM is the **contract** — Cortex Code translates it directly into executable dbt models.
+The STTM is the **contract** — CoCo translates it directly into executable dbt models.
 """)
 
 
-PROMPT_3_2 = """For the edw dbt project, generate a comprehensive test suite for the DIM_PASSENGER model based on its STTM metadata (sttm_dim_passenger.csv):
+PROMPT_3_2 = """Generate a dbt test suite for DIM_PASSENGER based on its STTM (sttm_dim_passenger.csv):
 
-1. Schema tests (in schema.yml) derived from the STTM:
-   - DIM_PASSENGER_KEY: not_null + unique (it's the PK per KEY_TYPE)
-   - PASSENGER_ID: not_null + unique among current records (it's the AK — alternate/business key)
-   - All columns marked TARGET_NULLABLE = 'No': not_null tests
-   - CURRENTFLAG: accepted_values ['0', '1']
-   - DELETEDFLAG: accepted_values ['0', '1']
-   - LATEARRIVINGFLAG: accepted_values ['Y', 'N']
-   - UPDATETYPE: accepted_values ['INSERT', 'UPDATE', 'DELETE']
+1. Schema tests derived from the STTM columns (not_null, unique, accepted_values, relationships)
+2. Custom SCD2 integrity tests: no overlapping date ranges, exactly one current record per passenger, hash consistency
+3. PII-aware tests: verify masking policies on PII-flagged columns (NAME_PASSENGER, EMAIL)
 
-2. Custom data quality tests (in tests/ folder):
-   - scd_no_overlapping_versions: For any PASSENGER_ID, date ranges (SCDSTARTDATETIME to SCDENDDATETIME) must not overlap
-   - exactly_one_current_record: Every PASSENGER_ID with DELETEDFLAG='0' must have exactly one record with CURRENTFLAG='1'
-   - hash_integrity: TYPE1HASH must match the recomputed SHA2 of the Type 1 columns (detect drift/corruption)
-
-3. PII-aware tests (derived from PII_FLAG column in STTM):
-   - Verify that columns flagged as PII (NAME_PASSENGER, EMAIL) have masking policies applied
-
-Generate all test files and show me the complete test configuration."""
+Generate all test files."""
 
 render_prompt("Prompt 3.2", "Generate dbt Tests for DIM_PASSENGER", PROMPT_3_2)
 
@@ -187,7 +175,7 @@ The key insight: **the STTM itself tells you what to test.** PK columns get uniq
 
 PROMPT_3_3 = """Now execute the dbt project and produce a data quality report:
 
-1. Run `dbt run` to build the mart models in EDW
+1. Run `dbt run` to build the mart models in AIRLINE_OPS_LABUSERXX.GOLD
 2. Run `dbt test` to execute all schema tests and custom DQ tests
 3. Produce a consolidated summary report showing:
    - Total models built and their status (success/error)
@@ -197,7 +185,7 @@ PROMPT_3_3 = """Now execute the dbt project and produce a data quality report:
    - For DIM_PASSENGER: distinct PASSENGER_ID count and count of current active records (CURRENTFLAG='1')
 
 4. If any tests fail, explain what the failures mean and suggest a fix
-5. Confirm the GOLD tables are Iceberg tables (SHOW ICEBERG TABLES IN EDW.GOLD) and show a sample of 5 rows from DIM_PASSENGER to verify the SCD2 structure
+5. Confirm the GOLD tables are Iceberg tables (SHOW ICEBERG TABLES IN AIRLINE_OPS_LABUSERXX.GOLD) and show a sample of 5 rows from DIM_PASSENGER to verify the SCD2 structure
 
 Execute and show the full report."""
 
@@ -218,12 +206,12 @@ DQ Summary Report
 Models: 3 built (3 marts) | 0 errors
 Tests:  12 passed | 0 failed | 0 warned
 
-GOLD Layer (Iceberg tables in EDW.GOLD):
+GOLD Layer (Iceberg tables in AIRLINE_OPS_LABUSERXX.GOLD):
   DIM_FLIGHT:     1,850 rows
   DIM_PASSENGER:  3,200 rows (2,980 current records)
   FACT_BOOKING:  12,400 rows
 
-SHOW ICEBERG TABLES IN EDW.GOLD → all 3 marts listed as Iceberg
+SHOW ICEBERG TABLES IN AIRLINE_OPS_LABUSERXX.GOLD → all 3 marts listed as Iceberg
 ```
 
 This validates that:
@@ -240,13 +228,13 @@ render_key_concepts([
     {"term": "TYPE1HASH", "definition": "A SHA-256 hash computed over all Type 1 (overwritable) columns. Used for change detection: if the incoming hash differs from the existing hash, the record has changed and needs updating."},
     {"term": "Snowflake-Managed Iceberg Table", "definition": "An Iceberg table using Snowflake as the catalog and Snowflake-managed storage (EXTERNAL_VOLUME = SNOWFLAKE_MANAGED). Open format interoperability with zero external volume or IAM configuration."},
     {"term": "FK Lookups in Facts", "definition": "FACT_BOOKING resolves FLIGHT_KEY and PASSENGER_KEY by looking up the dimension surrogate keys from the source business keys — the standard pattern when facts reference dimensions by natural keys."},
-    {"term": "STTM as Contract", "definition": "The STTM is not documentation — it's a specification. Every column, type, nullability, and transformation is defined. Cortex Code translates this contract directly into executable code."},
+    {"term": "STTM as Contract", "definition": "The STTM is not documentation — it's a specification. Every column, type, nullability, and transformation is defined. CoCo translates this contract directly into executable code."},
 ])
 
 render_what_you_built([
     "dbt project (edw) implementing all 3 STTMs",
-    "3 mart models in EDW.GOLD as Snowflake-managed Iceberg tables",
+    "3 mart models in AIRLINE_OPS_LABUSERXX.GOLD as Snowflake-managed Iceberg tables",
     "DIM_PASSENGER with full SCD Type 2 logic (versioning, hash change detection, soft deletes)",
     "~12 data quality tests derived from STTM metadata",
-    "Consolidated DQ summary report validating the EDW layer",
+    "Consolidated DQ summary report validating the GOLD layer",
 ], session_num=3)

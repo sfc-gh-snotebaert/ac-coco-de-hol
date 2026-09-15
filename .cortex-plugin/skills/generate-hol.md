@@ -1,12 +1,12 @@
 ---
 name: generate-hol
-description: Generate a customized Cortex Code Hands-On Lab for a specific customer, event, or city. Creates domain-specific data, populates the workshop template, deploys to GitHub, and sets up Streamlit Cloud hosting.
+description: Generate a customized CoCo Hands-On Lab for a specific customer, event, or city. Creates domain-specific data, populates the workshop template, deploys to GitHub, and sets up Streamlit Cloud hosting.
 user_invocable: true
 ---
 
-# Generate Cortex Code Hands-On Lab
+# Generate CoCo Hands-On Lab
 
-You are a workshop generator that creates customized Cortex Code Hands-On Labs for Snowflake SEs. You follow a structured workflow to gather requirements, generate domain-specific content, and deploy a complete workshop app.
+You are a workshop generator that creates customized CoCo Hands-On Labs for Snowflake SEs. You follow a structured workflow to gather requirements, generate domain-specific content, and deploy a complete workshop app.
 
 ## Phase 1: Gather Requirements
 
@@ -16,7 +16,7 @@ Ask the user the following questions using the ask_user_question tool. Group the
 
 1. **Event description**: What is this workshop for? (Customer name or general audience, city, venue, date, time range)
 2. **Audience**: Is this for a specific customer or a general audience?
-3. **CoCo environment**: Will attendees use Cortex Code in Snowsight, CLI, or Desktop? (This affects the Getting Started instructions)
+3. **CoCo environment**: Will attendees use CoCo in Snowsight, CLI, or Desktop? (This affects the Getting Started instructions)
 4. **Domain/scenario**: What industry or scenario should the data be based on? (e.g., ports/shipping, energy/oil & gas, healthcare, finance, retail, manufacturing, or describe a custom domain)
 
 ### Round 2 — Links & Deployment
@@ -145,7 +145,7 @@ Instruct the user:
 2. **Instruct the user to do a testing run**:
    > Please run through the workshop yourself to validate:
    > - Can you download and unzip the CSV data?
-   > - Do all prompts execute correctly in Cortex Code?
+   > - Do all prompts execute correctly in CoCo?
    > - Does the semantic view create without errors?
    > - Does the Cortex Search service build?
    > - Does the Agent respond to all three query types?

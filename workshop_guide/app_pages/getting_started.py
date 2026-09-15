@@ -12,8 +12,8 @@ with st.container(border=True):
 Before the workshop, you received an **email from the facilitator** containing your pre-provisioned Snowflake account details:
 
 - **Account URL** — the link to your Snowflake environment
-- **Username**
-- **Password**
+- **Username**: LABUSERXX
+- **Password**: CHANGE_ME_2026!
 
 Locate this email and keep the credentials handy.
 
@@ -28,5 +28,7 @@ with st.container(border=True):
     st.markdown("""
 Open the **account URL** from the email in your browser and log in with the provided **username** and **password**.
 
-Once logged in to Snowsight, open **Cortex Code** from the left navigation panel — this is the AI coding assistant where you will paste all prompts from this workshop.
+Ensure that the role **OPENFLOW_ADMIN** is selected in the role picker (bottom left Snowsight menu).
+
+Once logged in to Snowsight, open **CoCo** by clicking on the blue button with a star in the bottom right of your Snowsight window — this is the AI coding assistant where you will paste all prompts from this workshop.
 """)

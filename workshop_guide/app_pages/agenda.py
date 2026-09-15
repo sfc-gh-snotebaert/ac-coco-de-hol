@@ -27,10 +27,10 @@ st.markdown("##### What you'll build by end of session")
 st.markdown("""
 | Object Type | Count | Examples |
 |-------------|-------|---------|
-| **Databases** | 2 | `AIRLINE_OPS` (CDC landing zone), `EDW` (warehouse layer) |
-| **Openflow Connector** | 1 | `PG_CDC_CONNECTOR` — live Postgres CDC into AIRLINE_OPS |
-| **Iceberg Tables** | 3 | `EDW.GOLD.DIM_FLIGHT`, `DIM_PASSENGER` (SCD2), `FACT_BOOKING` |
-| **dbt Models** | 4 | Mart models (Iceberg in EDW.GOLD) |
+| **Database** | 1 | `AIRLINE_OPS_LABUSERXX` (CDC landing zone + GOLD mart layer) |
+| **Openflow Connector** | 1 | `PG_CDC_CONNECTOR_LABUSERXX` — live Postgres CDC into AIRLINE_OPS_LABUSERXX |
+| **Iceberg Tables** | 3 | `AIRLINE_OPS_LABUSERXX.GOLD.DIM_FLIGHT`, `DIM_PASSENGER` (SCD2), `FACT_BOOKING` |
+| **dbt Models** | 4 | Mart models (Iceberg in AIRLINE_OPS_LABUSERXX.GOLD) |
 | **dbt Tests** | ~12 | not_null, unique, relationships, accepted_values, custom SCD integrity |
 | **Recommendations Report** | 1 | Clustering keys, anti-pattern fixes, performance improvements |
 """)

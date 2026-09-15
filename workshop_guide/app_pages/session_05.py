@@ -1,20 +1,20 @@
 import streamlit as st
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(5, "Data Engineer Skill (Stretch)", "10:45 AM", "10 min", "Reusable Cortex Code skill that packages the code review workflow for any dbt project")
+render_session_header(5, "Data Engineer Skill (Stretch)", "10:45 AM", "10 min", "Reusable CoCo skill that packages the code review workflow for any dbt project")
 
 st.info("This is a **stretch session** — complete it if time allows. It builds on the code review workflow from Session 4.")
 
 st.space("small")
 
 render_technologies_used([
-    {"name": "Cortex Code Skills", "description": "Reusable prompt workflows that can be triggered by name. Skills encapsulate expert knowledge into repeatable, shareable patterns.", "icon": "psychology"},
+    {"name": "CoCo Skills", "description": "Reusable prompt workflows that can be triggered by name. Skills encapsulate expert knowledge into repeatable, shareable patterns.", "icon": "psychology"},
     {"name": "Workflow Automation", "description": "Packaging multi-step processes (review → analyze → report) into a single invokable unit that produces consistent output.", "icon": "repeat"},
     {"name": "Prompt Engineering", "description": "Structuring prompts with clear inputs, constraints, and output formats to get reliable, high-quality results from AI assistants.", "icon": "edit_note"},
 ])
 
 
-PROMPT_5_1 = """Create a Cortex Code skill called "dbt-code-review" that packages the code review workflow from Session 4 into a reusable skill.
+PROMPT_5_1 = """Create a CoCo skill called "dbt-code-review" that packages the code review workflow from Session 4 into a reusable skill.
 
 The skill should:
 
@@ -41,7 +41,7 @@ Show me the complete skill file."""
 render_prompt("Prompt 5.1", "Create the Code Review Skill", PROMPT_5_1)
 
 render_explanation("What this prompt does", """
-Creates a reusable skill definition that can be invoked in future Cortex Code sessions:
+Creates a reusable skill definition that can be invoked in future CoCo sessions:
 
 ```markdown
 # dbt Code Review Skill
@@ -97,7 +97,7 @@ This is the feedback loop: build the skill, test it, refine it. In production, y
 
 
 render_key_concepts([
-    {"term": "Cortex Code Skill", "definition": "A reusable prompt workflow defined in a SKILL.md file. Skills have trigger phrases, structured inputs, and defined output formats. They encapsulate expertise into repeatable patterns."},
+    {"term": "CoCo Skill", "definition": "A reusable prompt workflow defined in a SKILL.md file. Skills have trigger phrases, structured inputs, and defined output formats. They encapsulate expertise into repeatable patterns."},
     {"term": "Trigger Phrases", "definition": "Natural language phrases that activate a skill (e.g., 'review my dbt project'). Multiple triggers can map to the same skill for flexibility."},
     {"term": "Prompt Template", "definition": "A structured prompt with placeholders for inputs. The skill fills in the template with the user's specific context (project path, file list) at invocation time."},
 ])

@@ -1,7 +1,7 @@
 import streamlit as st
 from components import render_session_header, render_prompt, render_explanation, render_technologies_used, render_key_concepts, render_what_you_built
 
-render_session_header(2, "Create Openflow Postgres Connector", "9:15 AM", "30 min", "Gen2 Postgres CDC connector replicating airline_ops into AIRLINE_OPS via Openflow")
+render_session_header(2, "Create Openflow Postgres Connector", "9:15 AM", "30 min", "Gen2 Postgres CDC connector replicating airline_ops into AIRLINE_OPS_LABUSERXX via Openflow")
 
 render_technologies_used([
     {"name": "Openflow Gen2 Connectors", "description": "Managed CDC connectors that replicate data from external databases (Postgres, MySQL, SQL Server) into Snowflake with minimal configuration.", "icon": "cable"},
@@ -68,7 +68,7 @@ ORDER BY TABLE_SCHEMA, TABLE_NAME;
 - The connector runs on `RUNTIME_PG` (verified in Session 1) inside `DEPLOYMENT_DEV`
 - Credentials come from `PG_SETUP.CONFIG.PG_INSTANCE_INFO` — the same table you reviewed in Prompt 1.1
 - The publication `openflow_pub` was created on the source; the connector subscribes to it for CDC
-- The runtime role was already granted `CREATE TABLE` on `AIRLINE_OPS.RESERVATIONS` and `AIRLINE_OPS.FLIGHT_OPS`, so the connector can create its target tables automatically
+- The runtime role was already granted `CREATE TABLE` on `AIRLINE_OPS_LABUSERXX.RESERVATIONS` and `AIRLINE_OPS_LABUSERXX.FLIGHT_OPS`, so the connector can create its target tables automatically
 
 Once the initial load completes, AIRLINE_OPS_LABUSERXX contains live replicated copies of `airports`, `flights`, `passengers`, and `bookings` — and stays in sync as the source changes.
 """)

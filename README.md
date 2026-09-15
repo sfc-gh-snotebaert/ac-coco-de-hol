@@ -1,6 +1,6 @@
-# Cortex Code Hands-On Lab — Data Engineering Template
+# CoCo Hands-On Lab — Data Engineering Template
 
-This is the generic template for generating city/domain-specific Cortex Code Data Engineering workshop labs. Each workshop is a Streamlit app that guides attendees through 5 sessions building an enterprise data pipeline on Snowflake using Openflow, dbt, and AI-assisted code review.
+This is the generic template for generating city/domain-specific CoCo Data Engineering workshop labs. Each workshop is a Streamlit app that guides attendees through 5 sessions building an enterprise data pipeline on Snowflake using Openflow, dbt, and AI-assisted code review.
 
 ## Workshop Structure
 
@@ -10,7 +10,7 @@ This is the generic template for generating city/domain-specific Cortex Code Dat
 | 2 | Enterprise Ingestion with Openflow | Openflow connector → Iceberg tables with audit columns and naming standards |
 | 3 | EDW Pipeline from STTM with dbt | dbt project from STTM, staging + mart models, SCD Type 2, DQ tests |
 | 4 | Code Review & Optimization | SQL anti-pattern scan, query profile analysis, clustering recommendations |
-| 5 | Data Engineer Skill (Stretch) | Reusable Cortex Code skill packaging the code review workflow |
+| 5 | Data Engineer Skill (Stretch) | Reusable CoCo skill packaging the code review workflow |
 
 ## Template Variables
 
@@ -21,7 +21,7 @@ All files use `{{VARIABLE_NAME}}` placeholders. When generating a new workshop, 
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `WORKSHOP_TITLE` | Main title | Air Canada Data Engineering Workshop |
-| `WORKSHOP_SUBTITLE` | Subtitle line | Building Enterprise Pipelines with Cortex Code |
+| `WORKSHOP_SUBTITLE` | Subtitle line | Building Enterprise Pipelines with CoCo |
 | `PAGE_ICON` | Streamlit page icon | `:material/engineering:` |
 | `SCENARIO_DESCRIPTION` | 2-3 sentence scenario intro | Air Canada's operational systems run on legacy Postgres... |
 | `DURATION` | Total workshop time | 2.5 hrs |
@@ -81,7 +81,7 @@ All files use `{{VARIABLE_NAME}}` placeholders. When generating a new workshop, 
 
 ### Using the `/generate-hol` Skill (Recommended)
 
-This repo includes a Cortex Code skill that automates the entire workshop creation process. Here's how to install and use it:
+This repo includes a CoCo skill that automates the entire workshop creation process. Here's how to install and use it:
 
 #### Step 1: Install the skill
 
@@ -92,7 +92,7 @@ git clone https://github.com/sfc-gh-obenning/coco-hol-template.git
 cd coco-hol-template
 ```
 
-Then install the plugin in Cortex Code by running this in your terminal:
+Then install the plugin in CoCo by running this in your terminal:
 
 ```bash
 cortex plugin install ./
@@ -122,7 +122,7 @@ This workshop requires a pre-provisioned Postgres database that participants con
 
 #### Step 5: Run the skill
 
-Open Cortex Code (Snowsight, CLI, or Desktop) and type:
+Open CoCo (Snowsight, CLI, or Desktop) and type:
 
 ```
 /generate-hol

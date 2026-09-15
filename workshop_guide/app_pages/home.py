@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.title("Air Canada Data Engineering Workshop")
-st.markdown("Building Enterprise Pipelines with Cortex Code")
+st.markdown("Building Enterprise Pipelines with CoCo")
 
 st.space("small")
 
@@ -15,9 +15,9 @@ st.space("medium")
 st.markdown("#### How this workshop works")
 
 st.markdown("""
-Each section has **numbered prompts** that you copy and paste into **Cortex Code**:
+Each section has **numbered prompts** that you copy and paste into **CoCo**:
 
-- **Cortex Code** — your AI pair-programmer for building infrastructure, pipelines, and reviewing code
+- **CoCo** — your AI pair-programmer for building infrastructure, pipelines, and reviewing code
 - Each prompt builds on the previous — run them in order throughout the session
 
 You will go from raw source data to a production-ready dimensional warehouse, with enterprise-grade ingestion, automated testing, and code review — all driven by natural language prompts.
@@ -28,14 +28,14 @@ st.space("small")
 st.markdown("#### The scenario")
 with st.container(border=True):
     st.markdown("""
-Air Canada's operational systems — flight operations and reservations — run on a Postgres database (PG1, airline_ops). Your mission: build an enterprise-grade data pipeline that ingests this data into Snowflake with Openflow, transforms it into an Iceberg-based dimensional warehouse with dbt, and optimizes it for production — all using Cortex Code as your AI pair-programmer.
+Air Canada's operational systems — flight operations and reservations — run on a Postgres database (PG1, airline_ops). Your mission: build an enterprise-grade data pipeline that ingests this data into Snowflake with Openflow, transforms it into an Iceberg-based dimensional warehouse with dbt, and optimizes it for production — all using CoCo as your AI pair-programmer.
 
 We'll build a complete data engineering platform covering:
 
 | Layer | What we build | Source |
 |-------|---------------|--------|
-| **Ingestion** | Openflow Gen2 CDC connector → AIRLINE_OPS | Postgres PG1 (airline_ops) |
-| **EDW** | dbt Iceberg dimensional marts in EDW.GOLD, driven by STTMs | AIRLINE_OPS replicated tables |
+| **Ingestion** | Openflow Gen2 CDC connector → AIRLINE_OPS_LABUSERXX.RESERVATIONS and AIRLINE_OPS_LABUSERXX.FLIGHT_OPS | Postgres PG1 (airline_ops) |
+| **GOLD** | dbt Iceberg dimensional marts in AIRLINE_OPS_LABUSERXX.GOLD, driven by STTMs | Replicated tables |
 | **Quality** | dbt tests as data quality gates, consolidated DQ summary report | Mart models |
 | **Optimization** | Code review, clustering recommendations, anti-pattern fixes | Generated SQL |
 """)
@@ -48,15 +48,15 @@ with st.container(border=True):
     st.markdown("""
 In 2 hrs, we build an enterprise data engineering pipeline end-to-end:
 
-**1. Review Current Configuration** — Explore the pre-provisioned AIRLINE_OPS and PG_SETUP databases and verify the Openflow deployment (DEPLOYMENT_DEV) and runtime (RUNTIME_PG) are active.
+**1. Review Current Configuration** — Explore the pre-provisioned AIRLINE_OPS_LABUSERXX and PG_SETUP databases and verify the Openflow deployment (DEPLOYMENT_DEV) and runtime (RUNTIME_PG) are active.
 
-**2. Create Openflow Postgres Connector** — Create PG_CDC_CONNECTOR on RUNTIME_PG, replicate the airline_ops source into AIRLINE_OPS via CDC, and verify the initial load.
+**2. Create Openflow Postgres Connector** — Create PG_CDC_CONNECTOR_LABUSERXX on RUNTIME_PG, replicate the airline_ops source into AIRLINE_OPS_LABUSERXX via CDC, and verify the initial load.
 
-**3. Create dbt Project from STTM Files** — Accept three Source-to-Target Mapping documents, generate a dbt project with Iceberg dimensional marts in EDW.GOLD (with SCD2 in DIM_PASSENGER), run automated data quality tests, and produce a summary report.
+**3. Create dbt Project from STTM Files** — Accept three Source-to-Target Mapping documents, generate a dbt project with Iceberg dimensional marts in AIRLINE_OPS_LABUSERXX.GOLD (with SCD2 in DIM_PASSENGER), run automated data quality tests, and produce a summary report.
 
-**4. Code Review & Optimization** — Use Cortex Code as a code review agent to scan for SQL anti-patterns, analyze query profiles, and recommend clustering strategies.
+**4. Code Review & Optimization** — Use CoCo as a code review agent to scan for SQL anti-patterns, analyze query profiles, and recommend clustering strategies.
 
-**5. Data Engineer Skill (Stretch)** — Package the code review workflow as a reusable Cortex Code skill.
+**5. Data Engineer Skill (Stretch)** — Package the code review workflow as a reusable CoCo skill.
 """)
 
 st.space("small")
@@ -64,10 +64,10 @@ st.space("small")
 st.markdown("#### Prerequisites")
 with st.container(border=True):
     st.markdown("""
-- Snowflake account with **ACCOUNTADMIN** role — pre-provisioned with Openflow enabled (see **Getting Started**)
-- **Cortex Code** open in Snowsight and connected to your account
+- Snowflake account with **OPENFLOW_ADMIN** role — pre-provisioned with Openflow enabled (see **Getting Started**)
+- **CoCo** open in Snowsight and connected to your account
 - STTM files (provided in the workshop repo, linked in Session 3)
 """)
 
 st.space("medium")
-st.caption("Built for the September 15, 2026 workshop  :material/location_on:  Air Canada Centre, Montreal, QC  |  9:00 AM – 11:00 AM")
+st.caption("Built for the September 16, 2026 workshop  :material/location_on:  Air Canada Centre, Montreal, QC  |  9:00 AM – 11:00 AM")

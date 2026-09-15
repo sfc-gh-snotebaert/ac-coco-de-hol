@@ -46,7 +46,7 @@ Present as a structured review report."""
 render_prompt("Prompt 4.1", "SQL Anti-Pattern & Standards Review", PROMPT_4_1)
 
 render_explanation("What this prompt does", """
-Uses Cortex Code as a code review agent. It analyzes the generated SQL and produces findings like:
+Uses CoCo as a code review agent. It analyzes the generated SQL and produces findings like:
 
 ```
 CODE REVIEW REPORT — edw
@@ -84,7 +84,7 @@ PROMPT_4_2 = """Now analyze the query performance of our dbt models. For the two
    - **Join strategies**: Are joins using hash join vs nested loop? Is the build side appropriate?
    - **Bytes scanned**: How much data is being read relative to output?
 
-3. Based on typical query patterns for an airline EDW:
+3. Based on typical query patterns for an airline data warehouse:
    - Analysts filter by: booking date range, route (origin/destination), fare class
    - Operations filter by: departure date, aircraft, flight status
    - Loyalty team filters by: passenger, loyalty tier
@@ -109,13 +109,13 @@ SELECT *
 FROM TABLE(GET_QUERY_OPERATOR_STATS(LAST_QUERY_ID()));
 
 -- Recommend clustering based on query patterns
-ALTER ICEBERG TABLE EDW.GOLD.FACT_BOOKING
+ALTER ICEBERG TABLE AIRLINE_OPS_LABUSERXX.GOLD.FACT_BOOKING
   CLUSTER BY (BOOKING_DATE, ORIGIN_AIRPORT, FARE_CLASS);
 
-ALTER ICEBERG TABLE EDW.GOLD.DIM_FLIGHT
+ALTER ICEBERG TABLE AIRLINE_OPS_LABUSERXX.GOLD.DIM_FLIGHT
   CLUSTER BY (DEPARTURE_TS, AIRCRAFT_ID, STATUS);
 
-ALTER ICEBERG TABLE EDW.GOLD.DIM_PASSENGER
+ALTER ICEBERG TABLE AIRLINE_OPS_LABUSERXX.GOLD.DIM_PASSENGER
   CLUSTER BY (LOYALTY_TIER, HOME_AIRPORT);
 ```
 
@@ -160,7 +160,7 @@ OPTIMIZATION RECOMMENDATIONS REPORT
 ====================================
 Project: edw
 Date: [today]
-Reviewer: Cortex Code
+Reviewer: CoCo
 
 EXECUTIVE SUMMARY
 -----------------

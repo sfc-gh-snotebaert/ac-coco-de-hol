@@ -49,7 +49,7 @@ def render_prompt(prompt_id: str, title: str, prompt_text: str):
                 on_change=_on_toggle,
                 args=(prompt_id,),
             )
-        st.caption("Copy this prompt and paste it into Cortex Code")
+        st.caption("Copy this prompt and paste it into CoCo")
         st.code(prompt_text, language="text", wrap_lines=True)
 
 

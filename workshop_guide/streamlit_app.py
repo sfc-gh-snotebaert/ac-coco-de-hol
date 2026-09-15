@@ -34,7 +34,7 @@ page = st.navigation(
             st.Page("app_pages/session_01.py", title=_title(1, "Review Configuration"), icon=":material/settings:"),
             st.Page("app_pages/session_02.py", title=_title(2, "Openflow Connector"), icon=":material/cloud_download:"),
         ],
-        "Block 2: EDW & Optimization": [
+        "Block 2: GOLD Layer & Optimization": [
             st.Page("app_pages/session_03.py", title=_title(3, "dbt from STTMs"), icon=":material/build_circle:"),
             st.Page("app_pages/session_04.py", title=_title(4, "Code Review"), icon=":material/rate_review:"),
             st.Page("app_pages/session_05.py", title=_title(5, "DE Skill (Stretch)"), icon=":material/psychology:"),
