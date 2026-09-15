@@ -27,7 +27,7 @@ After creating the connector:
 Report the results."""
 
 render_prompt("Prompt 2.1", "Create & Start the PG_CDC_CONNECTOR", PROMPT_2_1)
-st.warning(":material/edit: **Before pasting:** replace `XX` in the 2 occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
+st.warning(":material/edit: **Before executing in CoCo:** replace `XX` in the 2 occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
 
 render_explanation("What this prompt does", """
 Creates the CDC pipeline from Postgres into Snowflake:

@@ -17,7 +17,7 @@ st.markdown("#### Step 1: Configure Iceberg as the default table format for sche
 PROMPT_3_0 = """Create a schema called GOLD in AIRLINE_OPS_LABUSERXX that uses SNOWFLAKE as the catalog and SNOWFLAKE_MANAGED as the external volume."""
 
 render_prompt("Prompt 3.0", "Create GOLD schema and set Iceberg as default table format", PROMPT_3_0)
-st.warning(":material/edit: **Before pasting:** replace `XX` in the occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
+st.warning(":material/edit: **Before executing in CoCo:** replace `XX` in the occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
 
 render_explanation("What this prompt does", """
 Creates the GOLD schema and configures it as an Iceberg schema:
@@ -76,7 +76,7 @@ Generate a dbt project called edw that implements these three GOLD tables:
 Generate all files and show the complete project structure. Do not run the build or validate — we will do that interactively in the workspace using dbt commands."""
 
 render_prompt("Prompt 3.1", "Generate dbt Project from STTMs", PROMPT_3_1)
-st.warning(":material/edit: **Before pasting:** replace `XX` in the 3 occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
+st.warning(":material/edit: **Before executing in CoCo:** replace `XX` in the 3 occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
 
 render_explanation("What this prompt does", """
 Generates a complete dbt project implementing the three STTM specifications:
@@ -167,13 +167,12 @@ PROMPT_3_3 = """1. Run `dbt test` to execute all schema tests and custom DQ test
 Execute and show the full report."""
 
 render_prompt("Prompt 3.3", "Execute Tests & DQ Report", PROMPT_3_3)
-st.warning(":material/edit: **Before pasting:** replace `XX` in the 3 occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
+st.warning(":material/edit: **Before executing in CoCo:** replace `XX` in `LABUSERXX` in the prompt with your assigned lab user number.")
 
 render_explanation("What this prompt does", """
-Runs the full dbt pipeline and produces a quality report:
+Runs the dbt tests and produces a quality report:
 
 ```
-dbt run --project-dir edw
 dbt test --project-dir edw
 ```
 

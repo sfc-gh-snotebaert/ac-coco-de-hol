@@ -19,7 +19,7 @@ PROMPT_1_1 = """Review the current objects in the account:
 Report what you find."""
 
 render_prompt("Prompt 1.1", "Review Pre-Provisioned Objects", PROMPT_1_1)
-st.warning(":material/edit: **Before pasting:** replace `XX` in `LABUSERXX` in the prompt with your assigned lab user number.")
+st.warning(":material/edit: **Before executing in CoCo:** replace `XX` in `LABUSERXX` in the prompt with your assigned lab user number.")
 
 render_explanation("What this prompt does", """
 Explores the two databases that have been pre-provisioned for this workshop:
