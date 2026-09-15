@@ -14,20 +14,26 @@ render_technologies_used([
 
 st.markdown("#### Step 1: Configure Iceberg as the default table format for schema GOLD")
 
-PROMPT_3_0 = """Create a schema called GOLD in AIRLINE_OPS_LABUSERXX that uses SNOWFLAKE as the catalog and SNOWFLAKE_MANAGED as the external volume."""
+PROMPT_3_0 = """Run these SQL statements:
+
+1. Set CATALOG = 'SNOWFLAKE' at the database level on AIRLINE_OPS_LABUSERXX (required before Iceberg metadata format can be used at the schema level).
+2. Create a schema called GOLD in AIRLINE_OPS_LABUSERXX with EXTERNAL_VOLUME = 'SNOWFLAKE_MANAGED' and DEFAULT_METADATA_WRITE_FORMAT = 'ICEBERG'."""
 
 render_prompt("Prompt 3.0", "Create GOLD schema and set Iceberg as default table format", PROMPT_3_0)
 st.warning(":material/edit: **Before executing in CoCo:** replace `XX` in the occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
 
 render_explanation("What this prompt does", """
-Creates the GOLD schema and configures it as an Iceberg schema:
+Configures the database and creates the GOLD schema for Iceberg:
 
 ```sql
-CREATE SCHEMA IF NOT EXISTS AIRLINE_OPS_LABUSERXX.GOLD;
-ALTER SCHEMA AIRLINE_OPS_LABUSERXX.GOLD SET CATALOG = 'SNOWFLAKE' EXTERNAL_VOLUME = 'SNOWFLAKE_MANAGED';
+ALTER DATABASE AIRLINE_OPS_LABUSERXX SET CATALOG = 'SNOWFLAKE';
+
+CREATE SCHEMA IF NOT EXISTS AIRLINE_OPS_LABUSERXX.GOLD
+  EXTERNAL_VOLUME = 'SNOWFLAKE_MANAGED'
+  DEFAULT_METADATA_WRITE_FORMAT = 'ICEBERG';
 ```
 
-Setting the catalog and external volume at the **schema level** means every table created in GOLD automatically inherits Iceberg format — no per-table or per-model config needed. The GOLD layer is readable by Spark, Trino, and other engines through the Iceberg REST catalog, while Snowflake manages all storage.
+Setting the catalog at the **database level** is a prerequisite for Iceberg metadata at the schema level. Then, setting `EXTERNAL_VOLUME` and `DEFAULT_METADATA_WRITE_FORMAT` on the GOLD schema means every table created there automatically inherits Iceberg format — no per-table config needed. The GOLD layer is readable by Spark, Trino, and other engines through the Iceberg REST catalog, while Snowflake manages all storage.
 """)
 
 st.space("small")
