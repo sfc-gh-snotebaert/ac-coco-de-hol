@@ -79,7 +79,7 @@ Generate all files and show the complete project structure. Do not run the build
 
 render_prompt("Prompt 3.1", "Generate dbt Project from STTMs", PROMPT_3_1)
 st.warning(":material/edit: **Before executing in CoCo:** replace `XX` in the 3 occurrences of `LABUSERXX` in the prompt with your assigned lab user number.")
-st.info(":material/terminal: Use the `dbt build` command in the UI (bottom pane). If there are errors during the dbt run — click **Fix with CoCo** to fix them.")
+st.info(":material/terminal: Use the `dbt build` command in the UI (bottom pane). If there are errors during the dbt build — click **Fix with CoCo** to fix them.")
 
 render_explanation("What this prompt does", """
 Generates a complete dbt project implementing the three STTM specifications:
