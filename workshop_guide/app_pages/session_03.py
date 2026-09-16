@@ -71,7 +71,7 @@ Generate a dbt project called edw that implements these three GOLD tables:
 
 1. Create mart models in AIRLINE_OPS_LABUSERXX.GOLD schema — one per STTM. Each reads directly from the AIRLINE_OPS_LABUSERXX source tables (dbt sources) and applies the mappings, casts, and transformation logic from the STTMs:
    - DIM_FLIGHT
-   - DIM_PASSENGER
+   - DIM_PASSENGER. Implement SCD2 with a custom incremental model.
    - FACT_BOOKING
 2. Project structure: models/marts/, dbt_project.yml, sources.yml (AIRLINE_OPS_LABUSERXX), profiles.yml.
 
