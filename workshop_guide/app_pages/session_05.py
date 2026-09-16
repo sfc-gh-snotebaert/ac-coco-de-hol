@@ -70,16 +70,16 @@ Structured markdown with severity, location, issue, fix
 """)
 
 
-PROMPT_5_2 = """Test the dbt-code-review skill by running it against just the dimension models in our project.
+st.info("""Test the dbt-code-review skill by running it against just the dimension models in our project.
 
 Use the trigger phrase "review my dbt project" and point it at the dimension models only (models/marts/).
 
 Compare the output to what we got in Session 4:
 - Does it find the same issues?
 - Is the report format consistent?
-- Are the severity levels appropriate?
+- Are the severity levels appropriate?""")
 
-Show the skill output and your assessment of its quality."""
+PROMPT_5_2 = """review my dbt project model/marts"""
 
 render_prompt("Prompt 5.2", "Test the Skill", PROMPT_5_2)
 
