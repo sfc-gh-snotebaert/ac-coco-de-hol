@@ -111,7 +111,6 @@ PROMPT_3_2 = """Add tests to the DIM_PASSENGER model based on its STTM (sttm_dim
 
 1. Schema tests derived from the STTM columns (not_null, unique, accepted_values, relationships)
 2. Custom SCD2 integrity tests: no overlapping date ranges, exactly one current record per passenger, hash consistency
-3. PII-aware tests: verify masking policies on PII-flagged columns (NAME_PASSENGER, EMAIL)
 
 Generate all test files."""
 
